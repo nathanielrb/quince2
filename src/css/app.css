@@ -1,0 +1,211 @@
+html,body {
+    height: 100%;
+}
+body {
+
+}
+
+#changeRepoForm {
+    margin-bottom: 30px;
+}
+
+a {
+    cursor: pointer; 
+}
+a:hover {
+    text-decoration: none;
+}
+label {
+    display: block;
+}
+
+
+/* Headers */
+
+h1 {
+    font-size: 16pt;
+    font-weight: bold;
+}
+h2 {
+    font-size: 16pt;
+    font-weight: normal;
+}
+
+/* Nav */
+
+.side-panel .login {
+    margin-top: 18pt;
+}
+.side-panel .username {
+    font-weight: bold;
+    margin-top: 18pt;
+}
+.select-repo {
+    margin: 1.5em 0;
+}
+.select-repo select {
+    padding: .6em;
+    font-size: .9em;
+    color: gray;
+    background: #ccc;
+    font-weight: bold;
+}
+ul.breadcrumbs {
+    margin-top: 16pt;
+}
+ul.files, ul.breadcrumbs {
+    padding: 0;
+}
+ul.breadcrumbs li {
+    clear: both;
+    list-style: none;
+    display: inline;
+    font-weight: bold;
+}
+ul.files {
+    position: relative;
+}
+ul.files li {
+    list-style: none;
+    padding: 1em 1em 0 1em;
+/*    border-bottom: 1px solid #dcdcdc;*/
+    font-weight: bold;
+}
+ul.files li:after {
+    content: "";
+    display: block;
+    color: #dcdcdc;
+    background: #dcdcdc;
+    width: 10%;
+    height: 1px;
+    margin: 1em 0 0 0;
+}
+ul.files li.file {
+
+}
+ul.files li.file.editing {
+    
+}
+ul.files li.file.editing a {
+    color: black;
+}
+ul.files li.metadata {
+
+}
+ul.files li.directory {
+    /*background: #ddd;*/
+
+}
+
+ul.files li.cover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    padding: 0;
+}
+ul.files li.cover img {
+    padding: 1em 0;
+    width: 120px;
+}
+
+
+
+/* Panels */
+
+#container, .row {
+    height: 100%;
+}
+.side-panel {
+    padding: 0 8.2% !important;
+    padding-left: 45px !important;
+    background: #ccc;
+    height: 100%;
+}
+.edit-panel {
+    padding-left: 0px !important;
+}
+#editor {
+    border-bottom: 1px dotted #ddd;
+}
+#editor .banner {
+    margin: 0;
+    padding: 1em;
+    background: beige;
+}
+#editor .banner input {
+    font-size: 16pt;
+    background: beige;
+    border: none;
+    padding: .5em;
+    width: 50%;
+}
+#editor .banner h2 {
+    font-size: 16pt;
+    padding: .5em;
+    margin: 0;
+    width: 50%;
+    display: inline-block;
+}
+#editor .banner input:hover {
+    background: #ddd;
+}
+#editor .banner .buttons {
+    
+}
+.editor-toolbar {
+    background: #cc9;
+    padding: .5em;
+}
+.editor-toolbar button {
+    background: white;
+    border: 1px solid gray;
+    padding: 4px 8px;
+    display: inline-block;
+    margin: 4px;
+    font-size: small;
+    font-weight: bold;
+}
+#editor-content {
+    padding: 2em;
+}
+
+/* Utilities */
+
+.glyphicon.spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+/* Messages */
+
+.loading {
+    height: 1.5em;
+}
+ul.messages {
+    margin: 0;
+    padding: 0;
+}
+ul.messages li {
+    list-style: none;
+    padding: 8px;
+    font-size: small;
+}
+ul.messages li.message {
+    color: gray
+    border-top: 1px dotted gray;
+}
+
+.error {
+    color: red;
+}
