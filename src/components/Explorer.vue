@@ -73,13 +73,14 @@ export default {
     },
     methods: {
         changePath: function(path) {
-	    this.path = path;
+	    this.path = '/' + path;
+	    console.log(this.path);
    	    var vm = this;
             this.github.getFiles(this.path, response => { vm.files = response.data } );
 	    this.updateHash();
         },
 	updateHash: function(){
-	    window.location.hash = '#' + this.repo + '/' + this.path;
+	    window.location.hash = '#' + this.repo + this.path;
 	},
 	pathFromHash: function(){
 	    var hash = window.location.hash;
@@ -130,7 +131,7 @@ export default {
 
 
 	this.pathFromHash();
-	
+	console.log(this.path);
         if (this.username && this.repo)
 	    this.github.getFiles(this.path, (response) => { vm.files = response.data });
 	else
