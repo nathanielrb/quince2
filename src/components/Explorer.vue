@@ -74,7 +74,7 @@ export default {
     methods: {
         changePath: function(path) {
 	    this.path = '/' + path;
-	    console.log(this.path);
+
    	    var vm = this;
             this.github.getFiles(this.path, response => { vm.files = response.data } );
 	    this.updateHash();
@@ -116,10 +116,9 @@ export default {
 	this.filer = new Filer(this);
 
 	var vm = this;
-	this.$parent.$on('add-file',
-			 function(file){
-			     vm.files.push(file);
-			 });
+
+	this.$parent.$on('add-file', file =>  vm.files.push(file) );
+
 	
 	this.$parent.$on('remove-file',
 			 function(file){
@@ -131,7 +130,6 @@ export default {
 
 
 	this.pathFromHash();
-	console.log(this.path);
         if (this.username && this.repo)
 	    this.github.getFiles(this.path, (response) => { vm.files = response.data });
 	else

@@ -146,14 +146,13 @@ export default {
 	    this.loading = null;
 	    this.error = null;
 	    this.message = msg;
-	    console.log("msg: " + this.message);
+	    console.log("Message: " + this.message);
 	},
 	displayError: function(msg, obj){
 	    this.message = null;
 	    this.loading = null;
 	    this.error =  msg;
-	    console.log("Error");
-	    console.log(msg);
+	    console.log("Error:" + msg);
 	    console.log(obj);
 	},
 	clearMsg: function(n){

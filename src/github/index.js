@@ -98,8 +98,37 @@ module.exports = function(vm, params){
 		    }
 		    , g.error);
 	},
-	saveFile: function(file, filename, content){
-	    
+	saveFile: function(file, content, callback){
+
+	    var uri =  'https://api.github.com/repos/'
+		+ vm.repo + '/contents/'
+		+ file.path + '?access_token=' + vm.token;
+
+	    var params = {
+		"message": "Edited from Quince.",
+		"path": file.path,
+		"content": btoa(unescape(encodeURIComponent(content)))
+	    }
+
+	    if(file.sha)
+		params["sha"] = file.sha;
+		
+	    var g = this;
+	    vm.startLoading();
+
+	    vm.$http.put(uri, params)
+		.then(
+		    function(response){
+			vm.doneLoading();
+			vm.displayMsg("Saved.");
+
+			if(callback)
+			    callback(response);
+		    }
+		    , g.error);
+	},
+	oldSaveFile: function(file, filename, content){
+
 	    var newpath = filename != file.name
 		? file.path.substr(0, file.path.lastIndexOf('/'))
 		+ '/' + filename
@@ -125,30 +154,31 @@ module.exports = function(vm, params){
 
 	    vm.message = null;
 	    vm.error = null;
-	    vm.loading = true;
+	    vm.startLoading();
 
 	    var g = this;
-	    vm.$http.put(uri,params)
+	    vm.$http.put(uri, params)
 		.then(
 		    function(response){
-			vm.loading = null; //vm.$emit('loaded');
-			vm.message = "saved"; vm.$emit('msg', "Saved.");
-			file.sha = response.data.content.sha;
+			vm.doneLoading();
+			vm.displayMsg("Saved.");
+			file = response.data.content;
 
 			if(newpath){
-			    console.log("NEW: " + newpath);
 			    g.deleteFile(file,
-				function(){
-				    vm.file = response.data.content;
-				    vm.$emit('add-file', file);
-				    vm.changeEditingFile();
-				    //vm.$emit('change', vm.file.url);
-				});
+					 () => {
+					     console.log("Changing to " + file.url);
+					     console.log(file);
+					     vm.$emit('add-file', file);
+					     // vm.changeEditingFile(file.url);
+					     //vm.$emit('change', vm.file.url);
+					 });
 			}
 		    }
 		    , g.error);
 	},
 	deleteFile: function(file, callback){
+
 	    var uri =  'https://api.github.com/repos/'
 		+ vm.repo + '/contents/'
 		+ file.path + '?access_token=' + vm.token;
@@ -159,19 +189,18 @@ module.exports = function(vm, params){
 		"sha": file.sha
 	    }
 
-	    console.log("DELETING");
-	    console.log(uri);
-	    console.log(params);
 	    var g = this;
-	    vm.$http.delete(uri,params)
-		.then(function(response){
-		    vm.message = response.data.message; //vm.$emit('msg', response.data.message);
+
+	    vm.startLoading();
+	    vm.$http.delete(uri, {params: params})
+		.then(response => {
+		    vm.doneLoading();
+		    vm.displayMsg("Deleted.");
 		    vm.$emit('remove-file', file)
 			
 		    if(callback)
 			callback();
-		}
-		      , g.error);
+		}, g.error);
 	    
 	}
     }

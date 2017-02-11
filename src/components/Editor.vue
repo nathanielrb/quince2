@@ -41,11 +41,15 @@ export default {
             editorElt: null,
 	    file: null,
 	    filename: null,
+	    changingName: null,
 	    buttons: null,
 	    editorSvc: null
         };
     },
     props: ['fileUrl', 'token', 'repo', 'username', 'editor', 'github'],
+    computed: {
+	newpath: function() { return this.filename != this.file.name }
+    },
     methods: {
 	getFile: function () {
 	    this.file = null;
@@ -67,7 +71,29 @@ export default {
 	save: function(){
 	    var callback = null;
             this.content = this.editorSvc.cledit.getContent();
-	    this.github.saveFile(this.file, this.filename, this.content);
+
+	    var afterSave;
+	    var vm = this;
+	    if(this.newpath){
+		var oldfile = JSON.parse(JSON.stringify(this.file));
+		afterSave = (response) => 
+		    this.github.deleteFile(oldfile,
+					   () => {
+					       var newfile = response.data.content;
+
+					       vm.$parent.$emit('add-file', newfile);
+					       vm.$parent.changeEditingFile(newfile.url);
+
+					       vm.$nextTick( () =>  vm.file = newfile );
+
+					   });
+		
+		this.file.sha = null;
+		this.file.path = this.file.path.substr(0, this.file.path.lastIndexOf('/'))
+		    + '/' + this.filename;
+	    }
+	    
+	    this.github.saveFile(this.file, this.content, afterSave);
 	},
 	initEditor: function(){
             this.editorElt = document.querySelector('#editor-content');
@@ -80,10 +106,10 @@ export default {
     },
     watch: {
 	fileUrl: function(){
-            console.log("get file: " + this.fileUrl);
 	    
             if(this.fileUrl){
-                this.getFile();
+		if(!this.newname)
+                    this.getFile();
 	    }
             else
                 this.content = null;
