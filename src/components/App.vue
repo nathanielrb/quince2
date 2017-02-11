@@ -68,7 +68,8 @@
 <script>
     var utils = require('./../utilities/index.js');
 var Github = require('./../github/index.js');
-
+var fs      = require('fs');
+    
 import Explorer from './Explorer.vue'
 import Editor from './Editor.vue'
 
@@ -95,15 +96,24 @@ export default {
     created: function(){
 	var storedToken = localStorage.getItem('token');
 	var code = utils.getParameter('code');
-	
-	this.github = new Github(this,
-				 {
-				     id: 'efe3f24dd42bf7881928',
-				     redirect_uri: 'http://localhost:8080',
-				     state: 'bobo',
-				     gateway: 'http://localhost:9999/authenticate/'
-				 });
-	
+
+	// var config = JSON.parse(fs.readFileSync(__dirname + '/../../config/github.json', 'utf-8'));
+	var config = { "localhost":
+		       {
+			   id: 'efe3f24dd42bf7881928',
+			   redirect_uri: 'http://localhost:8080',
+			   state: 'bobo',
+			   gateway: 'http://localhost:9999/authenticate/'
+		       },
+		       "watchman-angelina-34103.netlify.com": {
+			   id: '9596358c85761a48004b',
+			   redirect_uri: 'http://watchman-angelina-34103.netlify.com',
+			   state: 'bobo',
+			   gateway: 'http://watchman-angelina-34103.netlify.com:9999/authenticate/'
+		       }
+		     }
+
+	this.github = new Github(this, config[window.location.hostname]);
 	
 	if(storedToken){
 	    this.token = storedToken;

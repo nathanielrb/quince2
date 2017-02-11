@@ -8,8 +8,8 @@ module.exports = function(vm, params){
 	    
 	    var github_uri = "https://github.com/login/oauth/authorize?"
 		+ 'client_id=' + params.id
-	    // + '&redirect_uri=' + params.redirect_uri + encodeURIComponent(hash)
-		+ '&redirect_uri=http://' + window.location.host + encodeURIComponent(hash)
+		+ '&redirect_uri=' + params.redirect_uri + encodeURIComponent(hash)
+		//+ '&redirect_uri=http://' + window.location.host + encodeURIComponent(hash)
 		+ encodeURIComponent(hash)
 		+ '&state=' + params.state
 		+'&scope=repo';
@@ -17,8 +17,8 @@ module.exports = function(vm, params){
 	    window.location.href = github_uri;
 	},
 	getToken: function(code, callback){
-	    //var url = params.gateway + code;
-	    var url = 'http://' +  window.location.hostname + ':9999/authenticate/' + code;
+	    var url = params.gateway + code;
+	    //var url = 'http://' +  window.location.hostname + ':9999/authenticate/' + code;
 
 	    var g = this;
 	    vm.$http.get(url).then(
