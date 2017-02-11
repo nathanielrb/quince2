@@ -49,24 +49,9 @@ export default {
 	    filer: null,
         };
     },
-    props: {
-        username: {
-            type: String,
-            required: true
-        },
-        repo: {
-            type: String,
-            required: true
-        },
-        fileUrl: {
-            type: String
-        },
-	github: null
-    },
+    props: ['username','repo','fileUrl','github'],
     computed: {
         sortedFiles: function() {
-	    console.log(this.files);
-	    
 	    if(this.files)
 		return this.files.slice(0)
 		.sort(this.filer.filesort)
@@ -90,40 +75,21 @@ export default {
         changePath: function(path) {
 	    this.path = path;
    	    var vm = this;
-            this.github.getFiles(this.path, (response) => { vm.files = response.data });
+            this.github.getFiles(this.path, response => { vm.files = response.data } );
 	    this.updateHash();
         },
 	updateHash: function(){
 	    window.location.hash = '#' + this.repo + '/' + this.path;
 	},
-        goBack: function() {
-            this.path = this.path.split('/').slice(0, -1).join('/');
-            if (this.path === '') this.path = '/';
-	    var vm = this;
-            this.github.getFiles(this.path, (response) => { vm.files = response.data });
-        },
-	ext: function(file){
-            var re = /(?:\.([^.]+))?$/;
-            return re.exec(file.path)[1];
+	pathFromHash: function(){
+	    var hash = window.location.hash;
+	    if(hash != ''){
+		var path = hash.substr(1).split('/').slice(2);
+		this.path = '/' + path.join('/');
+	    }
 	},
 	isEditing: function(file){
 	    return this.fileUrl == file.url;
-	},
-	isDir: function(file){
-	    return file.type == 'dir'
-	    	&& file.name[0] != '_';
-	},
-        isContent: function(file){
-	    return ["md","html", "jpg"].indexOf(this.ext(file)) > -1
-		&& file.name[0] != '_';
-        },
-	isMeta: function(file){
-	    return ["yml","yaml","json"].indexOf(this.ext(file)) > -1;
-        },
-	isViewable: function(file){
-	    return this.isContent(file)
-		|| this.isMeta(file)
-		|| this.isDir(file);
 	},
 	showAddFileForm: function(){
 	    this.addFileForm = true;
@@ -142,10 +108,7 @@ export default {
     },
     watch: {
         repo: function(newVal, oldVal) {
-            this.path = '/';
-	    window.location.hash = '#' + newVal;
-	    var vm = this;
-            this.github.getFiles(this.path, (response) => { vm.files = response.data });
+	    this.changePath('/');
         }
     },
     created: function() {
@@ -159,26 +122,19 @@ export default {
 	
 	this.$parent.$on('remove-file',
 			 function(file){
-			     var index = vm.files.findIndex(
-				 function(f){
-				     return f.path == file.path
-				 });
+			     var index = vm.files.findIndex(f => { return f.path == file.path } );
 
 			     if(index > -1)
 				 vm.files.splice(index, 1);
 			 });
 
 
-	var hash = window.location.hash;
-	if(hash != ''){
-	    var path = hash.substr(1).split('/').slice(2);
-	    this.path = '/' + path.join('/');
-	}
-
+	this.pathFromHash();
+	
         if (this.username && this.repo)
 	    this.github.getFiles(this.path, (response) => { vm.files = response.data });
 	else
-	    console.log("not getting files");
+	    this.$parent.displayError('No username or repository chosen.');
     }
 }
 

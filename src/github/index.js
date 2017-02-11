@@ -72,6 +72,11 @@ module.exports = function(vm, params){
             vm.$http.get('https://api.github.com/repos/' + vm.repo + '/contents/' + path + '?access_token=' + vm.token)
 		.then(response, g.error);
         },
+	getFile: function(url, callback){
+	    var g = this;
+	    vm.$http.get(url)
+		.then(callback, g.error);
+        },
 	putNewFile: function(newpath, files, filer){
 	    var uri =  'https://api.github.com/repos/'
 		+ vm.repo + '/contents'
@@ -99,7 +104,7 @@ module.exports = function(vm, params){
 		? file.path.substr(0, file.path.lastIndexOf('/'))
 		+ '/' + filename
 		: null;
-	    console.log('new? ' + newpath);
+
 	    var uri =  'https://api.github.com/repos/'
 		+ vm.repo + '/contents/'
 		+ (newpath ? newpath : file.path) + '?access_token=' + vm.token;

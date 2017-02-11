@@ -49,43 +49,26 @@ export default {
         };
     },
     props: ['fileUrl', 'token', 'repo', 'username', 'editor', 'github'],
-    computed: {
-        ext: function(){
-	    if(this.file){
-		var re = /(?:\.([^.]+))?$/;
-		return re.exec(this.file.path)[1];
-	    }
-        }
-    },
     methods: {
-        getFile: function(){
-	    var vm = this;
+	getFile: function () {
 	    this.file = null;
 	    this.content = null;
 
-            console.log("getting file from github");
-            this.$http.get(this.fileUrl)
-		.then(
-		       function(response) {
-			       vm.file = response.body;
-			       vm.content = decodeURIComponent(escape(atob(response.body.content)));
-			       this.$nextTick(function(){
-				   vm.initEditor();
-			       });
-                },
-		function(response){
-			  vm.$emit('error', response.data.message, response.data);			
-		});
-        },
+	    var vm = this;
+	    this.github.getFile(this.fileUrl,
+				response => {
+				    vm.file = response.body;
+				    vm.content = decodeURIComponent(escape(atob(response.body.content)));
+				    vm.$nextTick( () => vm.initEditor() );
+				});
+	},
         close: function(){
 	    this.$emit('close');
-	    this.fileUrl = null;
             this.file = null;
         },
 
 	save: function(){
 	    var callback = null;
-	    console.log(this.editorSvc);
             this.content = this.editorSvc.cledit.getContent();
 	    this.github.saveFile(this.file, this.filename, this.content);
 	},
@@ -107,7 +90,10 @@ export default {
             else
                 this.content = null;
         },
-	file: function(){ this.filename = this.file.name }
+	file: function(){
+	    if(this.file)
+		this.filename = this.file.name
+	}
     }
  }
 
