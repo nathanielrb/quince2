@@ -1,4 +1,4 @@
-var Editors = require('./editors/editors.js');
+var Editors = require('./../editors/editors.js');
 
 var filerRules = function(vm, file){
     return [
@@ -110,7 +110,11 @@ var file = function(vm){
 }
 
 var filesort = function(a, b) {
-    if(a.name[0] === '_' && b.name[0] != '_'){
+    if( a.name === 'cover.jpg')
+	return -1;
+    else if( b.name === 'cover.jpg')
+	return 1;
+    else if(a.name[0] === '_' && b.name[0] != '_'){
 	return -1;
     }
     else if(a.name[0] != '_' && b.name[0] === '_'){

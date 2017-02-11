@@ -1,6 +1,6 @@
 <template>
-<div id="editor" v-if="file">
-  <div class="banner">
+  <div id="editor" v-if="file">
+    <div class="banner">
     <input type="text" v-model="filename"/>
 
     <span class="buttons">

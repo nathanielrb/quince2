@@ -20,7 +20,7 @@
       </li>
     </ul>
 
-    <div>
+    <div class="add">
       <a v-on:click="showAddFileForm">
 	<i class="fa fa-plus"></i> file
       </a>
@@ -29,11 +29,12 @@
 	<button>Add</button>
       </form>
     </div>
+    </div>
   </div>
 </template>
 
 <script>
-var Filer = require('./../filer.js');
+var Filer = require('./../filer/index.js');
 
 export default {
   name: 'hello',
