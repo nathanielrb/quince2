@@ -80,9 +80,6 @@ ul.files li {
     border-top: 1px solid #dcdcdc;
     font-weight: bold;
 }
-ul.files li:first {
-   border-top: 2px solid #dcdcdc;
-}
 /*
 ul.files li:after {
     content: "";
