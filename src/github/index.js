@@ -14,6 +14,8 @@ module.exports = function(vm, params){
 		+ '&state=' + params.state
 		+'&scope=repo';
 
+	    alert(github_uri);
+
 	    window.location.href = github_uri;
 	},
 	getToken: function(code, callback){
