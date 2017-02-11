@@ -1,8 +1,20 @@
-{
+{ "default":
+  {
     "oauth_client_id": "efe3f24dd42bf7881928",
     "oauth_client_secret": "6c49896498b550b7bb83b88f312a0b4b543652e6",
     "oauth_host": "github.com",
     "oauth_port": 443,
     "oauth_path": "/login/oauth/access_token",
-    "oauth_method": "POST"
+      "oauth_method": "POST"
+  },
+  "netlify":
+  {
+      "oauth_client_id": "9596358c85761a48004b",
+      "oauth_client_secret": "a1e720a1e5cd8c072f7abdada9065ce6a3cfa40b",
+      "oauth_host": "github.com",
+      "oauth_port": 443,
+      "oauth_path": "/login/oauth/access_token",
+      "oauth_method": "POST"
+  }
 }
+  

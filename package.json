@@ -5,12 +5,13 @@
   "private": true,
   "scripts": {
       "serve": "http-server dist -s -c 1 -a localhost",
-      "dev": "npm-run-all --parallel watchify serve gatekeeper",
+      "local": "npm-run-all --parallel watchify serve gatekeeper:local",
       "build:css": "cat src/css/app.css src/editors/cledit/cledit.css node_modules/bootstrap/dist/css/bootstrap.min.css node_modules/bootstrap/dist/css/bootstrap-theme.min.css node_modules/font-awesome/css/font-awesome.min.css > dist/app.min.css",
       "build:js": "cross-env NODE_ENV=production browserify -g envify src/main.js | uglifyjs -c warnings=false -m > dist/build.js",
       "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o dist/build.js",
-      "prod": "npm-run-all --parallel build:js build:css gatekeeper",
-      "gatekeeper": "node gatekeeper/server.js" 
+      "dev": "npm-run-all --parallel build:js build:css gatekeeper:dev",
+      "gatekeeper:local": "node gatekeeper/server.js",
+      "gatekeeper:dev": "node gatekeeper/server.js netlify" 
   },
   "dependencies": {
     "bootstrap": "^3.3.5",
