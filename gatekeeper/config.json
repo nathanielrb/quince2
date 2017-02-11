@@ -1,0 +1,8 @@
+{
+    "oauth_client_id": "efe3f24dd42bf7881928",
+    "oauth_client_secret": "6c49896498b550b7bb83b88f312a0b4b543652e6",
+    "oauth_host": "github.com",
+    "oauth_port": 443,
+    "oauth_path": "/login/oauth/access_token",
+    "oauth_method": "POST"
+}
