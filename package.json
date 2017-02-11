@@ -4,12 +4,13 @@
   "author": "me",
   "private": true,
   "scripts": {
-      "serve": "http-server -s -c 1 -a localhost",
-      "dev": "npm-run-all --parallel watchify serve",
+      "serve": "http-server dist -s -c 1 -a localhost",
+      "dev": "npm-run-all --parallel watchify serve gatekeeper",
       "build:css": "cat src/css/app.css src/editors/cledit/cledit.css node_modules/bootstrap/dist/css/bootstrap.min.css node_modules/bootstrap/dist/css/bootstrap-theme.min.css node_modules/font-awesome/css/font-awesome.min.css > dist/app.min.css",
       "build:js": "cross-env NODE_ENV=production browserify -g envify src/main.js | uglifyjs -c warnings=false -m > dist/build.js",
       "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o dist/build.js",
-      "build": "npm run build:js && npm run build:css"
+      "prod": "npm-run-all --parallel build:js build:css gatekeeper",
+      "gatekeeper": "node gatekeeper/server.js" 
   },
   "dependencies": {
     "bootstrap": "^3.3.5",
