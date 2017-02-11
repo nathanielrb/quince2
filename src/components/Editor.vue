@@ -27,10 +27,6 @@
     </button>
   </div>
 
-  <div id="html-editor-toolbar" class="editor-toolbar" v-if="null">
-    <button class="toolbar-button">b</button>
-  </div>
-
   <div id="editor-content">{{content}}</div>
 </div>  
 </template>
@@ -45,7 +41,8 @@ export default {
             editorElt: null,
 	    file: null,
 	    filename: null,
-	    buttons: null
+	    buttons: null,
+	    editorSvc: null
         };
     },
     props: ['fileUrl', 'token', 'repo', 'username', 'editor', 'github'],
@@ -77,6 +74,7 @@ export default {
 
 	    this.$nextTick(function(){
                 this.editorSvc = this.editor(this.editorElt);
+		this.buttons = this.editorSvc.buttons;
 	    });
 	}
     },
