@@ -18,6 +18,9 @@
 	<div v-if="!token" class="login">
 	  <button  v-on:click="github.login">Log In With GitHub</button>
 	</div>
+	<div v-if="!token" class="login">
+	  <button  v-on:click="github.netlifylogin">Log In With Netlify</button>
+	</div>
 
 
 	<div v-if="token">
@@ -72,16 +75,8 @@ var fs      = require('fs');
     
 import Explorer from './Explorer.vue'
 import Editor from './Editor.vue'
-import NetlifyAuth from 'netlify-auth-js'
 
-const auth = new NetlifyAuth({
-  APIUrl: 'https://auth.netlify.com'
-});
 
-auth.signup('nrb','nathaniel@marginalia.be').then(
-  (response) => console.log("Confirmation email sent"),
-  (error) => console.log("Error during signup: %o", error.msg)
-);
 
 export default {
     name: 'app',
@@ -112,13 +107,15 @@ export default {
 			   id: 'efe3f24dd42bf7881928',
 			   redirect_uri: 'http://localhost:8080',
 			   state: 'bobo',
-			   gateway: 'http://localhost:9999/authenticate/'
+			   gateway: 'http://localhost:9999/authenticate/',
+			   netlify_id: '726d154c-9cae-4e51-b65c-77dbe573e46c'
 		       },
 		       "watchman-angelina-34103.netlify.com": {
 			   id: '9596358c85761a48004b',
 			   redirect_uri: 'http://watchman-angelina-34103.netlify.com',
 			   state: 'bobo',
-			   gateway: 'http://watchman-angelina-34103.netlify.com:9999/authenticate/'
+			   gateway: 'http://watchman-angelina-34103.netlify.com:9999/authenticate/',
+			   netlify_id: '726d154c-9cae-4e51-b65c-77dbe573e46c'
 		       }
 		     }
 

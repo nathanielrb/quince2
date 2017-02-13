@@ -1,5 +1,7 @@
+import NetlifyAuth from './../myNetlify.js'
+
 module.exports = function(vm, params){
-    return {
+    var G = {
 	error: function(response){
 	    vm.$emit('error', response.data.message, response.data);
 	},
@@ -17,19 +19,26 @@ module.exports = function(vm, params){
 	    window.location.href = github_uri;
 	},
 	netlifylogin: function(code, callback){
-	    netlify.authenticate({provider:"github", scope: "user"}, function(err, data) {
-		if (err) {
-		    vm.$emit('error', err);
-		    return null;
-		}
-		
-		vm.token = data.token;
-		localStorage.setItem('token', vm.token);
-			
-		if(callback)
-		    callback.apply(vm);
 
-            });
+	    netlify.configure({site_id: params.netlify_id});
+
+	    //var cb = () =>  
+	    netlify.authenticate({provider:"github", scope: "repo"},
+				 function(err,data){
+				     if(err)
+					 console.log(err);
+				     else{
+					 vm.token = data.token;
+					 localStorage.setItem('token', vm.token);
+					 console.log("TOKEN: "+vm.token);
+
+					 G.getUserName(G.getUserRepos);
+					 
+					 if(callback)
+					     callback.apply(vm);
+
+				     }
+				 });
 	},
 	getToken: function(code, callback){
 	    var url = params.gateway + code;
@@ -222,4 +231,6 @@ module.exports = function(vm, params){
 	    
 	}
     }
+
+    return G;
 }
