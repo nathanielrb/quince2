@@ -72,7 +72,16 @@ var fs      = require('fs');
     
 import Explorer from './Explorer.vue'
 import Editor from './Editor.vue'
+import NetlifyAuth from 'netlify-auth-js'
 
+const auth = new NetlifyAuth({
+  APIUrl: 'https://auth.netlify.com'
+});
+
+auth.signup('nrb','nathaniel@marginalia.be').then(
+  (response) => console.log("Confirmation email sent"),
+  (error) => console.log("Error during signup: %o", error.msg)
+);
 
 export default {
     name: 'app',

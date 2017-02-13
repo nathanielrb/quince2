@@ -125,10 +125,13 @@ ul.files li.cover img {
 .side-panel {
     padding: 0 !important;
     background: #ccc;
-    min-height: 100vh !important;
+    height: 100vh !important;
+    overflow-y: scroll;
 }
 .edit-panel {
     padding-left: 0px !important;
+    height: 100vh !important;
+    overflow-y: scroll;
 }
 #editor {
     border-bottom: 1px dotted #ddd;

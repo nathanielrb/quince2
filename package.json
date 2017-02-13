@@ -9,9 +9,8 @@
       "build:css": "cat src/css/app.css src/editors/cledit/cledit.css node_modules/bootstrap/dist/css/bootstrap.min.css node_modules/bootstrap/dist/css/bootstrap-theme.min.css node_modules/font-awesome/css/font-awesome.min.css > dist/app.min.css",
       "build:js": "cross-env NODE_ENV=production browserify -g envify src/main.js | uglifyjs -c warnings=false -m > dist/build.js",
       "watchify": "watchify -vd -p browserify-hmr -e src/main.js -o dist/build.js",
-      "dev": "npm-run-all --parallel build:js build:css gatekeeper:dev",
-      "gatekeeper:local": "node gatekeeper/server.js",
-      "gatekeeper:dev": "node gatekeeper/server.js netlify" 
+      "dev": "npm-run-all --parallel build:js build:css",
+      "gatekeeper:local": "node gatekeeper/server.js"
   },
   "dependencies": {
     "bootstrap": "^3.3.5",
@@ -20,7 +19,8 @@
     "prismjs": "0.0.1",
     "cledit": "^1.2.0",
     "vue": "^2.0.1",
-    "vue-resource": "^1.2.0"
+      "vue-resource": "^1.2.0",
+      "netlify-auth-js": "^0.5.5"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",

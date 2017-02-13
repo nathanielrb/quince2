@@ -14,9 +14,22 @@ module.exports = function(vm, params){
 		+ '&state=' + params.state
 		+'&scope=repo';
 
-	    alert(github_uri);
-
 	    window.location.href = github_uri;
+	},
+	netlifylogin: function(code, callback){
+	    netlify.authenticate({provider:"github", scope: "user"}, function(err, data) {
+		if (err) {
+		    vm.$emit('error', err);
+		    return null;
+		}
+		
+		vm.token = data.token;
+		localStorage.setItem('token', vm.token);
+			
+		if(callback)
+		    callback.apply(vm);
+
+            });
 	},
 	getToken: function(code, callback){
 	    var url = params.gateway + code;
@@ -74,7 +87,7 @@ module.exports = function(vm, params){
 	},
 	getFiles: function(path, response) {
 	    var g = this;
-            vm.$http.get('https://api.github.com/repos/' + vm.repo + '/contents/' + path + '?access_token=' + vm.token)
+            vm.$http.get('https://api.github.com/repos/' + vm.repo + '/contents' + path + '?access_token=' + vm.token)
 		.then(response, g.error);
         },
 	getFile: function(url, callback){
