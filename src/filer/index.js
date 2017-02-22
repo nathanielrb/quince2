@@ -1,111 +1,74 @@
-var Editors = require('./../editors/editors.js');
 
-var filerRules = function(vm, file){
-    return [
-	{
-	    test: /.*[.]md$/,
-	    icon: "fa-file-o",
-	    class: "file",
-	    name: function(){
-		return file.name
-	    },
-	    click: function(){
-		vm.$emit('edit', {url: file.url, editor: Editors.md});
-	    },
-	    url: file.url
-	},
-	{
-	    test: "_book.yml",
-	    icon: "fa-th-list",
-	    class: "metadata",
-	    name: function(){
-		return "Metadata";
-	    },
-	    click: function(){
-		vm.$emit('edit', {url: file.url});
-	    },
-	    url: file.url
-	},
-	{
-	    test: "_book.json",
-	    icon: "fa-tachometer",
-	    class: "metadata",
-	    name: function(){
-		return "Settings";
-	    },
-	    click: function(){
-		vm.$emit('edit', {url: file.url});
-	    },
-	    url: file.url
-	},
-	{
-	    test: "cover.jpg",
-	    class: "cover",
-	    html: function(){
-		return "<img src='" + file.download_url + "' alt='cover' />";
-	    },
-	    click: function(){},
-	    url: file.url
-	},
-	{
-	    test: function(){
-		return file.type == 'dir'
-	    	    && file.name[0] != '_';
-	    },
-	    icon: "fa-folder-o",
-	    class: "directory",
-	    name: function(){
-		return file.name;
-	    },
-	    click: function(){
-		vm.changePath(file.path); 
-	    },
-	    url: file.url
+var merge = function(rule, github_file, vm){
+    var file = {};
+
+    file.icon = rule.icon;
+    file.class = rule.class;
+    
+    if(typeof rule.click === "function"){
+	file.click = function(){
+	    rule.click(github_file, vm);
 	}
-    ]
+    }
+    else if(rule.editor)
+	file.click = function(){
+	    vm.$emit('edit', {url: github_file.url, editor: rule.editor });
+	}
+    else
+	file.click = () => 0;
+
+    if(typeof rule.name === "function"){
+	file.name = rule.name(github_file);
+    }
+    else if(rule.name === "string")
+	file.name = rule.name;
+    else
+	file.name = github_file.name;
+
+    if(rule.html)
+	file.html = rule.html(github_file);
+    
+    return file;
 }
 
-var merge = function(rule, file){
-    rule.file = file;
-    return rule;
-}
-
-var filerRec = function(file, rules){
+var filerRec = function(file, rules, vm){
     if(rules.length > 0){
 	var rule = rules[0];
 	
 	switch (typeof rule.test){
 	case "string":
 	    if(file.name === rule.test)
-		return merge(rule, file);
+		return merge(rule, file, vm);
 	    else
-		return filerRec(file, rules.slice(1));
+		return filerRec(file, rules.slice(1), vm);
 	    break;
 	case "function":
-	    if(rule.test(file.name))
-		return merge(rule, file);
+	    if(rule.test(file))
+		return merge(rule, file, vm);
 	    else
-		return filerRec(file, rules.slice(1));
+		return filerRec(file, rules.slice(1), vm);
 	    break;
 	case "object":
 	    if(rule.test.constructor.name === "RegExp"){
 		if(rule.test.exec(file.name))
-		    return merge(rule, file);
+		return merge(rule, file, vm);
 		else
-		    return filerRec(file, rules.slice(1));
+		    return filerRec(file, rules.slice(1), vm);
 	    }
 	    break;
 	default:
-	    return filerRec(file, rules.slice(1));
+	    return filerRec(file, rules.slice(1), vm);
 	}
     }
     else
 	return null;
 }
 
-var file = function(vm){
-    return function(file){
-	return filerRec(file, filerRules(vm, file));
+var file = function(rules){
+    return function(vm){
+	return function(file){
+	    return filerRec(file, rules, vm);
+	}
     }
 }
 
@@ -137,9 +100,9 @@ var filesort = function(a, b) {
 }
 
     
-module.exports = function(vm){
+module.exports = function(rules){
     return {
-	file: file(vm),
+	file: file(rules),
 	filesort: filesort
     }
 }

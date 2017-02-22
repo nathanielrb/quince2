@@ -13,8 +13,8 @@
       <li v-for="file in sortedFiles" v-bind:class="[file.class, {editing: isEditing(file)}]">
 	<a v-on:click="file.click">
 	  <i class="fa" v-if="file.icon" v-bind:class="file.icon"></i>
-	  <span v-if="file.html" v-html="file.html(file)"></span>
-	  <template v-if="!file.html">{{file.name()}}</template>
+	  <span v-if="file.html" v-html="file.html"></span>
+	  <template v-if="!file.html">{{file.name}}</template>
 	</a>
 	
       </li>
@@ -34,7 +34,6 @@
 </template>
 
 <script>
-var Filer = require('./../filer/index.js');
 
 export default {
   name: 'hello',
@@ -45,17 +44,16 @@ export default {
 	    newCoverImage: null,
 	    newCoverImageForm: null,
 	    addFileForm: null,
-	    newFileName: null,
-	    filer: null,
+	    newFileName: null
         };
     },
-    props: ['username','repo','fileUrl','github'],
+    props: ['username','repo','fileUrl','github', 'filer'],
     computed: {
         sortedFiles: function() {
 	    if(this.files)
 		return this.files.slice(0)
 		.sort(this.filer.filesort)
-		.map(this.filer.file)
+		.map(this.filer.file(this))
 		.filter( function(v){ return v; });
         },
 	breadcrumbs: function(){
@@ -113,8 +111,6 @@ export default {
         }
     },
     created: function() {
-	this.filer = new Filer(this);
-
 	var vm = this;
 
 	this.$parent.$on('add-file', file =>  vm.files.push(file) );

@@ -1,7 +1,21 @@
 <template>
   <div id="app">
       <div class="row">
-      <div class="side-panel col-md-4">
+
+      <div class="edit-panel col-md-7 col-md-offset-1">
+        <editor :file-url="fileUrl" :editor="editor"
+			    :username="username" :repo="repo" :github="github"
+			    v-on:close="fileUrl = null"
+
+			    v-on:change="changeEditingFile"
+			    v-on:msg="displayMsg"
+			    v-on:error="displayError"
+			    v-on:loading="startLoading"
+			    v-on:loaded="doneLoading">
+			  </editor>
+      </div>
+
+            <div class="side-panel col-md-4">
         <div class="logo">
   	  <h1>Quince
 		 <span class="status">
@@ -44,6 +58,7 @@
 	<template v-if="repo && username">
           <explorer
 	     :username="username" :repo="repo" :file-url="fileUrl" :github="github"
+	     :filer="filer"
 	     v-on:edit="editFile"
 	     v-on:msg="displayMsg"
 	     v-on:error="displayError"
@@ -53,29 +68,19 @@
 	</template>
       </div>
 
-      <div class="edit-panel col-md-8">
-        <editor :file-url="fileUrl" :editor="editor"
-			    :username="username" :repo="repo" :github="github"
-			    v-on:close="fileUrl = null"
-
-			    v-on:change="changeEditingFile"
-			    v-on:msg="displayMsg"
-			    v-on:error="displayError"
-			    v-on:loading="startLoading"
-			    v-on:loaded="doneLoading">
-			  </editor>
-      </div>
   </div><!-- .row -->
 </template>
 
 <script>
-    var utils = require('./../utilities/index.js');
+
+var utils = require('./../utilities/index.js');
 var Github = require('./../github/index.js');
-var fs      = require('fs');
-    
+
+var Filer = require('./../filer/index.js');
+var Rules = require('./../rules.js');
+
 import Explorer from './Explorer.vue'
 import Editor from './Editor.vue'
-
 
 
 export default {
@@ -93,8 +98,8 @@ export default {
 	    token: null,
 	    message: null,
 	    error: null,
-	    loading: null
-	    
+	    loading: null,
+	    filer: null
 	}
     },
     created: function(){
@@ -124,11 +129,13 @@ export default {
 	if(storedToken){
 	    this.token = storedToken;
 	    this.github.getUserName(this.github.getUserRepos(this.initRepo));
+	    this.filer = new Filer(Rules.filerRules);
 	}
 	else if(code){
 	    var hash = window.location.hash;
 	    history.replaceState({},window.document.title, '/' + hash);
 	    this.github.getToken(code, function(){ this.github.getUserName(this.github.getUserRepos) });
+	    this.filer = new Filer(Rules.filerRules);
 	}
     },
     methods: {

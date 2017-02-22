@@ -1,5 +1,6 @@
 html, body {
     min-height: 100vh;
+    background-color: #dedede !important;
 }
 body {
 
@@ -77,7 +78,7 @@ ul.files {
 ul.files li {
     list-style: none;
     padding: 1em 1em 1em 45px;
-    border-top: 1px solid #dcdcdc;
+    border-top: 1px solid #bcbcbc;
     font-weight: bold;
 }
 /*
@@ -124,17 +125,21 @@ ul.files li.cover img {
 }
 .side-panel {
     padding: 0 !important;
-    background: #ccc;
-    height: 100vh !important;
-    overflow-y: scroll;
+/*    height: 100vh !important;
+    overflow-y: scroll;*/
 }
 .edit-panel {
     padding-left: 0px !important;
-    height: 100vh !important;
-    overflow-y: scroll;
+    min-height: 100vh;
+
+    /*height: 100vh !important;
+    overflow-y: scroll;*/
 }
 #editor {
     border-bottom: 1px dotted #ddd;
+    box-shadow: 6px 6px 5px #888888;
+    background: white;
+    margin-top: 32px;
 }
 #editor .banner {
     margin: 0;
