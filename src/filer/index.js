@@ -2,6 +2,7 @@
 var merge = function(rule, github_file, vm){
     var file = {};
 
+    file.url = github_file.url;
     file.icon = rule.icon;
     file.class = rule.class;
     
@@ -20,7 +21,7 @@ var merge = function(rule, github_file, vm){
     if(typeof rule.name === "function"){
 	file.name = rule.name(github_file);
     }
-    else if(rule.name === "string")
+    else if(typeof rule.name === "string")
 	file.name = rule.name;
     else
 	file.name = github_file.name;

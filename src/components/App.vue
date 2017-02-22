@@ -161,6 +161,7 @@ export default {
         editFile: function(args){
             this.fileUrl = args.url;
 	    this.editor = args.editor;
+	    window.scrollTo(0,0);
         },
 	changeEditingFile: function(fileUrl){
 	    this.fileUrl = fileUrl;
