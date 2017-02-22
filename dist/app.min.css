@@ -126,12 +126,12 @@ ul.files li.cover img {
     padding: 0 !important;
     background: #ccc;
     height: 100vh !important;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 .edit-panel {
     padding-left: 0px !important;
     height: 100vh !important;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 #editor {
     border-bottom: 1px dotted #ddd;
