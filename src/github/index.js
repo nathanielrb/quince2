@@ -116,9 +116,13 @@ module.exports = function(vm, params){
 	    }
 
 	    var g = this;
+	    vm.startLoading();
 	    vm.$http.put(uri,params)
 		.then(
 		    function(response){
+			vm.doneLoading();
+			vm.displayMsg("Saved.");
+
 			callback(response);
 		    }
 		    , g.error);

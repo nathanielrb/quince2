@@ -27,9 +27,9 @@
 	  <i class="fa fa-plus"></i> {{rule}} file
 	</a>
 	<form v-if="addFileForm === rule" v-on:submit.prevent="addFile">
-	  <input autofocus v-model="newFileName" type="text" v-on:blur="hideAddFileForm" />
+	  <input autofocus v-model="newFileName" type="text" />
 	  <b>.{{rule}}</b>
-	  <button>Add</button>
+	  <a v-on:click="hideAddFileForm">Cancel</a>
 	</form>
       </div>
       <div v-else>
@@ -37,8 +37,8 @@
 	  <i class="fa fa-plus"></i> {{rule.label}}
 	</a>
 	<form v-if="addFileForm === rule" v-on:submit.prevent="addFile">
-	  <input autofocus v-model="newFileName" type="text" v-on:blur="hideAddFileForm" />
-	  <button>Add</button>
+	  <input autofocus v-model="newFileName" type="text"/>
+	  <a v-on:click="hideAddFileForm">Cancel</a>
 	</form>
       </div>
     </div>
@@ -124,6 +124,7 @@ export default {
 		newpath += "." + this.addFileForm;
 		var cb = function(response){
 		    var newfile = response.data.content;
+		    vm.hideAddFileForm();
 		    vm.files.push(newfile);
 		    filer(newfile).click();
 		}
@@ -141,13 +142,6 @@ export default {
 		}
 
 		cb(0);
-		/*
-		for(var i in this.addFileForm.files){
-		    var cb = function(response){
-			vm.changePath(newpath);
-		    }
-		    this.github.putNewFile(newpath + '/' + this.addFileForm.files[i], cb);
-		}*/
 	    }
 	}
     },
