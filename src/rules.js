@@ -1,6 +1,20 @@
 var Editors = require('./editors/editors.js');
 
 module.exports = {
+    dirRules: [
+	{
+	    test: "/books",
+	    create: [{
+		type: "dir",
+		label: "book",
+		files: ["_book.yml","_book.json"]
+	    }]
+	},
+	{
+	    test: /\/books\/.*/,
+	    create: ["md", "html"]
+	}
+    ],
     filerRules:
     [{
 	test: /.*[.]md$/,

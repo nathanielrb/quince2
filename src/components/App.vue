@@ -1,7 +1,53 @@
 <template>
   <div id="app">
-      <div class="row">
+        <div  v-if="!token" class="login">
+	  <div>
+	    <button  v-on:click="github.login">Log In With GitHub</button>
+	  </div>
+	  <div >
+	    <button  v-on:click="github.netlifylogin">Log In With Netlify</button>
+	  </div>
+        </div>
 
+      <div v-if="token"  class="row banner">
+
+        <div class="logout col-md-1">
+	  <span v-if="token">
+	    <!--<div class="username">{{username}}-->
+	    
+	      <a v-on:click="logout"><span class="fa fa-sign-out"></span></a>
+          </span>
+        </div>
+
+        <div class="logo  col-md-7">
+  	  <h1>Quince
+
+		 <span class="status">
+	    <span class="glyphicon glyphicon-refresh spinning" v-if="loading"></span>
+	    <span class="fa fa-check" v-if="message"
+		  v-bind:title="message"></span>
+	    <span class="fa fa-exclamation-circle error" v-if="error"
+		  v-bind:title="error"></span>
+	  </span> 
+	</h1>
+        </div>
+
+         <div class="repo col-md-4">	  
+	  <div class="select-repo">
+	    <select v-model="repo">
+	      <option v-for="repo in repos" v-bind:value="repo">
+		<template v-if="repo.split('/')[0] != username">
+		  {{repo.split('/')[0]}} :: 
+		</template>
+		{{repo.split('/')[1]}}
+	      </option>
+	    </select>
+	  </div>
+	</div>
+
+      </div>
+
+      <div v-if="token" class="row">
       <div class="edit-panel col-md-7 col-md-offset-1">
         <editor :file-url="fileUrl" :editor="editor"
 			    :username="username" :repo="repo" :github="github"
@@ -16,44 +62,7 @@
       </div>
 
             <div class="side-panel col-md-4">
-        <div class="logo">
-  	  <h1>Quince
-		 <span class="status">
-	    <span class="glyphicon glyphicon-refresh spinning" v-if="loading"></span>
-	    <span class="fa fa-check" v-if="message"
-		  v-bind:title="message"></span>
-	    <span class="fa fa-exclamation-circle error" v-if="error"
-		  v-bind:title="error"></span>
-	  </span> 
-	</h1>
-        </div>
 
-        <div class="login">
-	<div v-if="!token" class="login">
-	  <button  v-on:click="github.login">Log In With GitHub</button>
-	</div>
-	<div v-if="!token" class="login">
-	  <button  v-on:click="github.netlifylogin">Log In With Netlify</button>
-	</div>
-
-
-	<div v-if="token">
-	  <div class="username">{{username}}
-	    <small><a v-on:click="logout">logout</a></small>
-	  </div>
-	  
-	  <div class="select-repo">
-	    <select v-model="repo">
-	      <option v-for="repo in repos" v-bind:value="repo">
-		<template v-if="repo.split('/')[0] != username">
-		  {{repo.split('/')[0]}} :: 
-		</template>
-		{{repo.split('/')[1]}}
-	      </option>
-	    </select>
-	  </div>
-	</div>
-      </div><!-- .login -->
 
 	<template v-if="repo && username">
           <explorer
@@ -129,13 +138,13 @@ export default {
 	if(storedToken){
 	    this.token = storedToken;
 	    this.github.getUserName(this.github.getUserRepos(this.initRepo));
-	    this.filer = new Filer(Rules.filerRules);
+	    this.filer = new Filer(Rules);
 	}
 	else if(code){
 	    var hash = window.location.hash;
 	    history.replaceState({},window.document.title, '/' + hash);
 	    this.github.getToken(code, function(){ this.github.getUserName(this.github.getUserRepos) });
-	    this.filer = new Filer(Rules.filerRules);
+	    this.filer = new Filer(Rules);
 	}
     },
     methods: {

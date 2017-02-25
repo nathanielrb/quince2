@@ -32,33 +32,34 @@ var merge = function(rule, github_file, vm){
     return file;
 }
 
-var filerRec = function(file, rules, vm){
+var filerRec = function(file, rules, vm, returnFun){
+
     if(rules.length > 0){
 	var rule = rules[0];
 	
 	switch (typeof rule.test){
 	case "string":
 	    if(file.name === rule.test)
-		return merge(rule, file, vm);
+		return returnFun(rule);
 	    else
-		return filerRec(file, rules.slice(1), vm);
+		return filerRec(file, rules.slice(1), vm, returnFun);
 	    break;
 	case "function":
 	    if(rule.test(file))
-		return merge(rule, file, vm);
+		return returnFun(rule); //merge(rule, file, vm);
 	    else
-		return filerRec(file, rules.slice(1), vm);
+		return filerRec(file, rules.slice(1), vm, returnFun);
 	    break;
 	case "object":
 	    if(rule.test.constructor.name === "RegExp"){
 		if(rule.test.exec(file.name))
-		return merge(rule, file, vm);
+		    return returnFun(rule); //merge(rule, file, vm);
 		else
-		    return filerRec(file, rules.slice(1), vm);
+		    return filerRec(file, rules.slice(1), vm, returnFun);
 	    }
 	    break;
 	default:
-	    return filerRec(file, rules.slice(1), vm);
+	    return filerRec(file, rules.slice(1), vm, returnFun);
 	}
     }
     else
@@ -68,7 +69,7 @@ var filerRec = function(file, rules, vm){
 var file = function(rules){
     return function(vm){
 	return function(file){
-	    return filerRec(file, rules, vm);
+	    return filerRec(file, rules, vm, rule => { return merge(rule, file, vm);} );
 	}
     }
 }
@@ -103,7 +104,8 @@ var filesort = function(a, b) {
     
 module.exports = function(rules){
     return {
-	file: file(rules),
+	dir: function(dir){ return filerRec(dir, rules.dirRules, null, rule => { return rule }) },
+	file: file(rules.filerRules),
 	filesort: filesort
     }
 }

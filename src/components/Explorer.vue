@@ -1,6 +1,6 @@
 <template>
 <div id="explorer">
-    <ul class="breadcrumbs" v-if="files">
+  <ul class="breadcrumbs" v-if="files">
       <li class="crumb" v-for="(crumb, index) in breadcrumbs">
 	<template v-if="index < breadcrumbs.length - 1">
 	  <a v-on:click="changePath(crumb.path)">{{crumb.crumb}}</a> /
@@ -8,29 +8,42 @@
 	<b v-if="index == breadcrumbs.length - 1">{{crumb.crumb}}</b>
       </li>
     </ul>
-
-    <ul class="files" v-if="files">
-      <li v-for="file in sortedFiles" v-bind:class="[file.class, {editing: isEditing(file)}]">
-	<a v-on:click="file.click">
-	  <i class="fa" v-if="file.icon" v-bind:class="file.icon"></i>
-	  <span v-if="file.html" v-html="file.html"></span>
-	  <template v-if="!file.html">{{file.name}}</template>
-	</a>
-	
-      </li>
-    </ul>
-
-    <div class="add">
-      <a v-on:click="showAddFileForm">
-	<i class="fa fa-plus"></i> file
+  
+  <ul class="files" v-if="files">
+    <li v-for="file in sortedFiles" v-bind:class="[file.class, {editing: isEditing(file)}]">
+      <a v-on:click="file.click">
+	<i class="fa" v-if="file.icon" v-bind:class="file.icon"></i>
+	<span v-if="file.html" v-html="file.html"></span>
+	<template v-if="!file.html">{{file.name}}</template>
       </a>
-      <form v-if="addFileForm" v-on:submit.prevent="addFile">
-	<input autofocus v-model="newFileName" type="text" v-on:blur="hideAddFileForm" />
-	<button>Add</button>
-      </form>
-    </div>
+      
+    </li>
+  </ul>
+  
+  <div class="add">
+    <div v-for="rule in createRules.create">
+      <div v-if="typeof rule === 'string'">
+	<a v-on:click="showAddFileForm(rule)">
+	  <i class="fa fa-plus"></i> {{rule}} file
+	</a>
+	<form v-if="addFileForm === rule" v-on:submit.prevent="addFile">
+	  <input autofocus v-model="newFileName" type="text" v-on:blur="hideAddFileForm" />
+	  <b>.{{rule}}</b>
+	  <button>Add</button>
+	</form>
+      </div>
+      <div v-else>
+	<a v-on:click="showAddFileForm(rule)">
+	  <i class="fa fa-plus"></i> {{rule.label}}
+	</a>
+	<form v-if="addFileForm === rule" v-on:submit.prevent="addFile">
+	  <input autofocus v-model="newFileName" type="text" v-on:blur="hideAddFileForm" />
+	  <button>Add</button>
+	</form>
+      </div>
     </div>
   </div>
+  </div><!-- #explorer-->
 </template>
 
 <script>
@@ -67,6 +80,9 @@ export default {
 			    : elem
 		    } ]);
 		}, [{crumb: '..', path: ''}]);
+	},
+	createRules: function(){
+	    return this.filer.dir({name: this.path});
 	}
     },
     methods: {
@@ -90,8 +106,8 @@ export default {
 	isEditing: function(file){
 	    return this.fileUrl == file.url;
 	},
-	showAddFileForm: function(){
-	    this.addFileForm = true;
+	showAddFileForm: function(ext){
+	    this.addFileForm = ext;
 	},
 	hideAddFileForm: function(){
 	    this.newFileName = null;
@@ -99,10 +115,40 @@ export default {
 	},
 	addFile: function(){
 	    var name = this.newFileName;
+	    
 	    var newpath = this.path + '/' + name;
-
 	    var vm = this;
-	    this.github.putNewFile(newpath, this.files, this.filer);	    
+	    var filer = vm.filer.file(vm);
+	    
+	    if(typeof this.addFileForm === 'string'){
+		newpath += "." + this.addFileForm;
+		var cb = function(response){
+		    var newfile = response.data.content;
+		    vm.files.push(newfile);
+		    filer(newfile).click();
+		}
+		this.github.putNewFile(newpath, cb);
+	    }
+	    else {
+		var files = this.addFileForm.files;
+		var cb = function(i){
+		    if(files[i]){
+			vm.github.putNewFile(newpath + '/' + files[i], () => cb(i+1) );
+		    }
+		    else{
+			vm.changePath(newpath);
+		    }	
+		}
+
+		cb(0);
+		/*
+		for(var i in this.addFileForm.files){
+		    var cb = function(response){
+			vm.changePath(newpath);
+		    }
+		    this.github.putNewFile(newpath + '/' + this.addFileForm.files[i], cb);
+		}*/
+	    }
 	}
     },
     watch: {

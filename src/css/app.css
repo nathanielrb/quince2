@@ -15,17 +15,28 @@ a {
     text-decoration: none;
 }
 a:hover {
-    text-decoration: none;
+    text-decoration: none !important;
 }
 label {
     display: block;
 }
 
+/* Login */
+
+.banner {
+    background: #ccc;
+}
+.login {
+    padding: 8px;
+    background: #ccc;
+    padding: 8px 32px;
+    text-align: right;
+}
 
 /* Headers */
 
 h1 {
-    font-size: 16pt;
+    font-size: 16pt !important;
     font-weight: bold;
 }
 h2 {
@@ -34,21 +45,29 @@ h2 {
 }
 
 /* Nav */
-
-.side-panel .logo {
-    margin-top: 18pt;
-    margin-left: 45px;
+.logo {
+    padding-left: 0 !important;
 }
-.side-panel .login {
-    margin-top: 18pt;
-    margin-left: 45px;
+.logo h1 {
+    padding: 12px 0 12px 0;
+    margin: 0;
+}
+.select-repo {
+    padding: 12px 18px 12px 22px !important;
+}
+.logout {
+    padding: 18px 18px 18px 24px !important;
+    border-left: 1px solid #ddd;
+}
+.logout a {
+    color: #888;
 }
 .side-panel .username {
     font-weight: bold;
     margin-top: 18pt;
 }
 .select-repo {
-    margin: 1.5em 0;
+
 }
 .select-repo select {
     padding: .6em;
@@ -59,13 +78,17 @@ h2 {
 }
 ul.breadcrumbs {
     margin-top: 16pt;
-    padding-left: 45px;
+    font-size: 16pt;
 }
 .add {
     padding-left: 45px;
 }
+.side-panel #explorer {
+
+}
 ul.files {
-    padding: 0;
+    padding-right: 32px;
+    position: relative;
 }
 ul.breadcrumbs li {
     clear: both;
@@ -73,14 +96,14 @@ ul.breadcrumbs li {
     display: inline;
     font-weight: bold;
 }
-ul.files {
-    position: relative;
-}
 ul.files li {
     list-style: none;
-    padding: 1em 1em 1em 45px;
+    padding: 12px;
     border-top: 1px solid #bcbcbc;
-    font-weight: bold;
+}
+ul.files li a, ul.files li a:hover {
+    color: #888;
+    text-decoration: none;
 }
 /*
 ul.files li:after {
@@ -94,24 +117,27 @@ ul.files li:after {
 }
 */
 ul.files li.file {
-
+    background: white;
 }
-ul.files li.file.editing {
-    background: #dcdcdc;
+ul.files li.editing {
+    background: #ded;
+    font-weight: bold;
 }
 ul.files li.file.editing a {
     color: black;
 }
 ul.files li.metadata {
-
+    background: #ffefff;
 }
 ul.files li.directory {
-    /*background: #ddd;*/
+    background: #ffffef;
 
 }
 
 ul.files li.cover {
     border: none;
+    padding-left: 0;
+    padding-bottom: 22px;
 }
 ul.files li.cover img {
     width: 120px;
@@ -122,7 +148,7 @@ ul.files li.cover img {
 /* Panels */
 
 #app, .row {
-    min-height: 100vh;
+
 }
 .side-panel {
     padding: 0 !important;
@@ -222,4 +248,11 @@ ul.messages li.message {
 
 .error {
     color: red;
+}
+
+/* Add Files */
+
+.add button {
+    margin-left: 12px;
+    font-size: 11px;
 }

@@ -104,7 +104,7 @@ module.exports = function(vm, params){
 	    vm.$http.get(url)
 		.then(callback, g.error);
         },
-	putNewFile: function(newpath, files, filer){
+	putNewFile: function(newpath, callback){
 	    var uri =  'https://api.github.com/repos/'
 		+ vm.repo + '/contents'
 		+ newpath + '?access_token=' + vm.token;
@@ -119,9 +119,7 @@ module.exports = function(vm, params){
 	    vm.$http.put(uri,params)
 		.then(
 		    function(response){
-			var newfile = response.data.content;
-			files.push(newfile);
-			filer.file(newfile).click();
+			callback(response);
 		    }
 		    , g.error);
 	},
