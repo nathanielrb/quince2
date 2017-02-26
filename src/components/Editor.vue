@@ -22,13 +22,13 @@
       </a>
 
       <a v-on:click="close()">
-	<i class="fa fa-window-close-o"></i>
+	<span class="">X</span>
       </a>
     </span>
 <br style="clear:both"/>
   </div>
 
-  <pre id="editor-content"></pre>
+  <div id="editor-content"></div>
 </div>  
 </template>
 

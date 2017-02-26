@@ -236,6 +236,10 @@ div.sidebar {
     display: block;
     padding-left: 12px;
     border-left: 1px solid yellow;
+}
+.fn {
+    background-color: #ffc48a;
+    font-size: 12px;
 }/*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
@@ -312,8 +316,8 @@ h2 {
     padding: 12px 18px 12px 22px !important;
 }
 .logout {
-    padding: 18px 18px 18px 24px !important;
-    border-left: 1px solid #ddd;
+    padding: 16px 36px 16px 0px !important;
+    text-align: right;
 }
 .logout a {
     color: #9d9d9d;
@@ -336,10 +340,10 @@ h2 {
 ul.breadcrumbs {
     margin-top: 16pt;
     font-size: 26px;
-    padding: 8px 0 20px 0;
+    padding: 8px 0 16px 0;
 }
-.add {
-    padding-left: 45px;
+.add > div {
+    margin: .5em 0;
 }
 .side-panel #explorer {
 
@@ -352,8 +356,10 @@ ul.files {
 ul.breadcrumbs li {
     clear: both;
     list-style: none;
-    display: inline;
-    font-weight: bold;
+    font-size: 16pt;
+}
+ul.breadcrumbs li:last-child {
+    font-size: 26px;
 }
 ul.files li {
     list-style: none;
@@ -361,8 +367,8 @@ ul.files li {
     border-top: 1px solid #bcbcbc;
 }
 ul.files li a, ul.files li a:hover {
-    color: #9d9d9d;
-    text-decoration: none;
+		   color: #555;
+		   text-decoration: none;
 }
 /*
 ul.files li:after {
@@ -477,7 +483,7 @@ ul.files li.cover img {
 #editor-content {
     padding: 2em;
 }
-#editor pre {
+#editor-content {
     background: white !important;
     border: none !important;
     box-shadow: 6px 6px 5px #888888;

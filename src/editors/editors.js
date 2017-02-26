@@ -35,9 +35,9 @@ module.exports = {
 	    title: "metadata",
 	    type: "object",
 	    properties: {
-		title: { type: "string" },
-		author: { type: "array", items: { type: "string" } },
-		isbn: { type: "string" }
+		Title: { type: "string" },
+		Author: { type: "array", items: { type: "string" } },
+		Isbn: { type: "string" }
 	    }
 	}
 

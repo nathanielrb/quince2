@@ -3,9 +3,9 @@
   <ul class="breadcrumbs" v-if="files">
       <li class="crumb" v-for="(crumb, index) in breadcrumbs">
 	<template v-if="index < breadcrumbs.length - 1">
-	  <a v-on:click="changePath(crumb.path)">{{crumb.crumb}}</a> /
+	  <a v-on:click="changePath(crumb.path)">{{crumb.crumb}}</a>
 	</template>
-	<b v-if="index == breadcrumbs.length - 1">{{crumb.crumb}}</b>
+	<span v-if="index == breadcrumbs.length - 1">{{crumb.crumb}}</span>
       </li>
     </ul>
   
@@ -21,7 +21,7 @@
   </ul>
   
   <div class="add">
-    <div v-for="rule in dirRules.create">
+    <template v-for="rule in dirRules.create">
 
       <div v-if="typeof rule === 'string'">
 	<a v-on:click="showAddFileForm(rule)" v-if="addFileForm != rule">
@@ -44,7 +44,7 @@
 	</form>
       </div>
       
-    </div>
+    </template>
 
     <div v-for="rule in dirRules.uploads">
       <a v-if="addFileForm != rule" v-on:click="showAddFileForm(rule)">
@@ -85,6 +85,9 @@ export default {
 		.map(this.filer.file(this))
 		.filter( function(v){ return v; });
         },
+	repoName: function(){
+	    return this.repo.split('/')[1];
+	},
 	breadcrumbs: function(){
 	    return this.path.split('/')
 		.filter(function(e){ return e != '' })
@@ -95,7 +98,7 @@ export default {
 			    ? prevVal[prevVal.length - 1].path + '/' + elem
 			    : elem
 		    } ]);
-		}, [{crumb: '..', path: ''}]);
+		}, [{crumb: 'Cetri', path: ''}]);
 	},
 	dirRules: function(){
 	    return this.filer.dir({name: this.path});

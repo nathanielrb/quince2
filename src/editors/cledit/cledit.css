@@ -237,3 +237,13 @@ div.sidebar {
     padding-left: 12px;
     border-left: 1px solid yellow;
 }
+.fn {
+    background-color: #ffc48a;
+    font-size: 12px;
+}
+
+.blockquote {
+    padding-left: 1em;
+    border-left: 1px solid orange;
+    display: block !important;
+}

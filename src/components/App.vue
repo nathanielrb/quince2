@@ -11,15 +11,7 @@
 
       <div v-if="token"  class="row top-banner">
 
-        <div class="logout col-md-1">
-	  <span v-if="token">
-	    <!--<div class="username">{{username}}-->
-	    
-	      <a v-on:click="logout"><span class="fa fa-sign-out"></span></a>
-          </span>
-        </div>
-
-        <div class="logo  col-md-1">
+        <div class="logo col-md-2 col-md-offset-1">
   	  <h1>Quince<span class="blue">*</span>
 
 		 <span class="status">
@@ -32,7 +24,7 @@
 	</h1>
         </div>
 
-         <div class="repo col-md-4">	  
+         <div class="repo col-md-3">	  
 	  <div class="select-repo">
 	    <select v-model="repo">
 	      <option v-for="repo in repos" v-bind:value="repo">
@@ -45,25 +37,19 @@
 	  </div>
 	</div>
 
+        <div class="logout col-md-1 col-md-offset-5">
+	  <span v-if="token">
+	    <!--<div class="username">{{username}}-->
+	    
+	      <a v-on:click="logout"><span class="fa fa-sign-out"></span></a>
+          </span>
+        </div>
+
       </div>
 
       <div v-if="token" class="row">
-      <div class="edit-panel col-md-7 col-md-offset-1">
-        <editor :file-url="fileUrl" :editor="editor" :editor-params="editorParams"
-			    :username="username" :repo="repo" :github="github"
-			    v-on:close="fileUrl = null"
 
-			    v-on:change="changeEditingFile"
-			    v-on:msg="displayMsg"
-			    v-on:error="displayError"
-			    v-on:loading="startLoading"
-			    v-on:loaded="doneLoading">
-			  </editor>
-      </div>
-
-            <div class="side-panel col-md-4">
-
-
+            <div class="side-panel col-md-3 col-md-offset-1">
 	<template v-if="repo && username">
           <explorer
 	     :username="username" :repo="repo" :file-url="fileUrl" :github="github"
@@ -75,6 +61,19 @@
 	     v-on:loaded="doneLoading">
 	     </explorer>
 	</template>
+      </div>
+
+	    <div class="edit-panel col-md-7 ">
+        <editor :file-url="fileUrl" :editor="editor" :editor-params="editorParams"
+			    :username="username" :repo="repo" :github="github"
+			    v-on:close="fileUrl = null"
+
+			    v-on:change="changeEditingFile"
+			    v-on:msg="displayMsg"
+			    v-on:error="displayError"
+			    v-on:loading="startLoading"
+			    v-on:loaded="doneLoading">
+			  </editor>
       </div>
 
   </div><!-- .row -->
