@@ -12,7 +12,12 @@ module.exports = {
 	},
 	{
 	    test: /\/books\/.*/,
-	    create: ["md", "html"]
+	    create: ["md"],
+	    uploads: [{
+		name: "Word",
+		extension: /docx?$/,
+		handler: "/upload"
+	    }]
 	}
     ],
     filerRules:
@@ -30,14 +35,16 @@ module.exports = {
 	 icon: "fa-th-list",
 	 class: "metadata",
 	 name:  "Metadata",
-	 editor: Editors.md
+	 editor: Editors.yaml,
+	 noDelete: true
      },
      {
 	 test: "_book.json",
 	 icon: "fa-tachometer",
 	 class: "metadata",
 	 name: "Settings",
-	 editor: Editors.md,
+	 editor: Editors.text,
+	 noDelete: true
      },
      {
 	 test: "cover.jpg",

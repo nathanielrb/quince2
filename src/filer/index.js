@@ -5,18 +5,6 @@ var merge = function(rule, github_file, vm){
     file.url = github_file.url;
     file.icon = rule.icon;
     file.class = rule.class;
-    
-    if(typeof rule.click === "function"){
-	file.click = function(){
-	    rule.click(github_file, vm);
-	}
-    }
-    else if(rule.editor)
-	file.click = function(){
-	    vm.$emit('edit', {url: github_file.url, editor: rule.editor });
-	}
-    else
-	file.click = () => 0;
 
     if(typeof rule.name === "function"){
 	file.name = rule.name(github_file);
@@ -26,6 +14,18 @@ var merge = function(rule, github_file, vm){
     else
 	file.name = github_file.name;
 
+    if(typeof rule.click === "function"){
+	file.click = function(){
+	    rule.click(github_file, vm);
+	}
+    }
+    else if(rule.editor)
+	file.click = function(){
+	    vm.$emit('edit', {url: github_file.url, editor: rule.editor, params: { name: file.name, canDelete: !rule.noDelete } });
+	}
+    else
+	file.click = () => 0;
+
     if(rule.html)
 	file.html = rule.html(github_file);
     
@@ -33,7 +33,6 @@ var merge = function(rule, github_file, vm){
 }
 
 var filerRec = function(file, rules, vm, returnFun){
-
     if(rules.length > 0){
 	var rule = rules[0];
 	
@@ -101,7 +100,6 @@ var filesort = function(a, b) {
     }
 }
 
-    
 module.exports = function(rules){
     return {
 	dir: function(dir){ return filerRec(dir, rules.dirRules, null, rule => { return rule }) },

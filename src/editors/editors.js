@@ -2,6 +2,9 @@ window.diff_match_patch = require('googlediff'); ///javascript/diff_match_patch_
 
 require('clunderscore/clunderscore');
 require('prismjs/components/prism-core');
+//require('prismjs/components/prism-yaml');
+//require('./prism-yaml.js');
+
 require('../../node_modules/cledit/scripts/cleditCore.js');
 require('../../node_modules/cledit/scripts/cleditHighlighter.js');
 require('../../node_modules/cledit/scripts/cleditKeystroke.js');
@@ -15,10 +18,44 @@ var Pagedown = require('./cledit/pagedown.js');
 var buttonBar = require('./cledit/buttonBar.js');
 var mdGrammar = require('./cledit/mdGrammar.js');
 
+var yaml = require('js-yaml');
+
 module.exports = {
-    md: function(elt){
+    text: function(elt){
+	elt.setAttribute("contentEditable",true);
+	
+	return {
+	    getContent: () => { return elt.innerHTML },
+	    buttons: null
+	}
+    },
+    yaml: function(elt, content){
+
+	var schema = {
+	    title: "metadata",
+	    type: "object",
+	    properties: {
+		title: { type: "string" },
+		author: { type: "array", items: { type: "string" } },
+		isbn: { type: "string" }
+	    }
+	}
+
+	var BrutusinForms = brutusin["json-forms"];
+	var bf = BrutusinForms.create(schema);
+
+	bf.render(elt, yaml.safeLoad(content));
+	
+	return {
+	    getContent: () => yaml.safeDump(bf.getData()),
+	    buttons: null
+	}
+    },
+    md: function(elt, content){
+	elt.innerHTML = content;
         var editor = window.cledit(elt);
-	    
+	var pd = new Pagedown({input: editor});
+
         var prismGrammar = mdGrammar({
 	    fences: true,
 	    tables: true,
@@ -30,8 +67,11 @@ module.exports = {
 	    subs: true,
 	    sups: true
         })
-	    
-            editor.init({
+	        
+	//var load = function(content){
+	
+
+	    editor.init({
 		sectionHighlighter: function (section) {
                     return window.Prism.highlight(section.text, prismGrammar)
 		},
@@ -49,17 +89,16 @@ module.exports = {
 		}
             })
 
-
-	    var pd = new Pagedown({input: editor});
 	    pd.run();
-	    
-	    var buttons = new buttonBar({ cledit: editor, pagedownEditor: pd });
+//	}
 
-	    return {
-		cledit: editor,
-		pagedownEditor: pd,
-		buttons: buttons
-	    }
+	var buttons = new buttonBar({ cledit: editor, pagedownEditor: pd });
+	
+	return {
+//	    load: load,
+	    getContent: editor.getContent,
+	    buttons: buttons
+	}
     }
 }
 	

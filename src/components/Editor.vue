@@ -1,40 +1,41 @@
 <template>
   <div id="editor" v-if="file">
     <div class="banner">
-    <input type="text" v-model="filename"/>
+
+    <div v-if="editorParams.name != file.name" class="editor-name">{{editorParams.name}}</div>
+    <input v-else type="text" v-model="filename"/>
+
+
+  </div>
+
+  <div id="md-editor-toolbar" class="editor-toolbar">
+    <button class="toolbar-button" v-for="btn in buttons" v-on:click="btn.click()" v-bind:title="btn.label">
+      <i class="fa" v-bind:class="btn.icon"></i>
+    </button>
 
     <span class="buttons">
       <a v-on:click="save()">
 	<i class="fa fa-save"></i>
-	Save
       </a>
-      <!--<a v-on:click="github.deleteFile(file, close)">-->
-	<a class="file" v-on:click="github.deleteFile(file, close)">
+	<a v-if="editorParams.canDelete"  class="file" v-on:click="github.deleteFile(file, close)">
 	<i class="fa fa-trash"></i>
-	Delete
       </a>
 
       <a v-on:click="close()">
 	<i class="fa fa-window-close-o"></i>
-	Close
       </a>
     </span>
+<br style="clear:both"/>
   </div>
 
-  <div id="md-editor-toolbar" class="editor-toolbar" >
-    <button class="toolbar-button" v-for="btn in buttons" v-on:click="btn.click()" v-bind:title="btn.label">
-      <i class="fa" v-bind:class="btn.icon"></i>
-    </button>
-  </div>
-
-  <div id="editor-content">{{content}}</div>
+  <pre id="editor-content"></pre>
 </div>  
 </template>
 
 
 <script>
 export default {
-  name: 'hello',
+  name: 'Editor',
   data () {
         return {
             content: null,
@@ -42,13 +43,13 @@ export default {
 	    file: null,
 	    filename: null,
 	    changingName: null,
-	    buttons: null,
 	    editorSvc: null
         };
     },
-    props: ['fileUrl', 'token', 'repo', 'username', 'editor', 'github'],
+    props: ['fileUrl', 'token', 'repo', 'username', 'editor', 'github', 'editorParams'],
     computed: {
-	newpath: function() { return this.filename != this.file.name }
+	newpath: function() { return this.filename != this.file.name },
+	buttons: function() { return  this.editorSvc ? this.editorSvc.buttons : null }
     },
     methods: {
 	getFile: function () {
@@ -66,11 +67,13 @@ export default {
         close: function(){
 	    this.$emit('close');
             this.file = null;
+	    this.buttons = null;
         },
 
 	save: function(){
 	    var callback = null;
-            this.content = this.editorSvc.cledit.getContent();
+            //this.content = this.editorSvc.cledit.getContent();
+	    this.content = this.editorSvc.getContent();
 
 	    var afterSave;
 	    var vm = this;
@@ -92,15 +95,16 @@ export default {
 		this.file.path = this.file.path.substr(0, this.file.path.lastIndexOf('/'))
 		    + '/' + this.filename;
 	    }
+	    else{
+		afterSave = (response) => vm.file = response.body.content;
+	    }
 	    
 	    this.github.saveFile(this.file, this.content, afterSave);
 	},
 	initEditor: function(){
-            this.editorElt = document.querySelector('#editor-content');
-
 	    this.$nextTick(function(){
-                this.editorSvc = this.editor(this.editorElt);
-		this.buttons = this.editorSvc.buttons;
+		this.editorSvc = this.editor(document.querySelector('#editor-content'),
+					     this.content);
 	    });
 	}
     },

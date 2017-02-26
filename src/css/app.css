@@ -1,6 +1,6 @@
 html, body {
     min-height: 100vh;
-    background-color: #dedede !important;
+    background-color: #eee !important;
 }
 body {
 
@@ -23,8 +23,12 @@ label {
 
 /* Login */
 
-.banner {
-    background: #ccc;
+.top-banner {
+    background: black;
+    color: white;
+}
+.top-banner .blue {
+    color: #5bc0de;
 }
 .login {
     padding: 8px;
@@ -60,7 +64,7 @@ h2 {
     border-left: 1px solid #ddd;
 }
 .logout a {
-    color: #888;
+    color: #9d9d9d;
 }
 .side-panel .username {
     font-weight: bold;
@@ -72,13 +76,15 @@ h2 {
 .select-repo select {
     padding: .6em;
     font-size: .9em;
-    color: gray;
-    background: #ccc;
+    color: #9d9d9d;
+    background: black;
+    border: none;
     font-weight: bold;
 }
 ul.breadcrumbs {
     margin-top: 16pt;
-    font-size: 16pt;
+    font-size: 26px;
+    padding: 8px 0 20px 0;
 }
 .add {
     padding-left: 45px;
@@ -87,8 +93,9 @@ ul.breadcrumbs {
 
 }
 ul.files {
-    padding-right: 32px;
+    padding: 0 32px 0 0;
     position: relative;
+    
 }
 ul.breadcrumbs li {
     clear: both;
@@ -102,7 +109,7 @@ ul.files li {
     border-top: 1px solid #bcbcbc;
 }
 ul.files li a, ul.files li a:hover {
-    color: #888;
+    color: #9d9d9d;
     text-decoration: none;
 }
 /*
@@ -117,7 +124,7 @@ ul.files li:after {
 }
 */
 ul.files li.file {
-    background: white;
+
 }
 ul.files li.editing {
     background: #ded;
@@ -127,10 +134,9 @@ ul.files li.file.editing a {
     color: black;
 }
 ul.files li.metadata {
-    background: #ffefff;
+
 }
 ul.files li.directory {
-    background: #ffffef;
 
 }
 
@@ -162,23 +168,27 @@ ul.files li.cover img {
     /*height: 100vh !important;
     overflow-y: scroll;*/
 }
+
+/* Editor */
+
 #editor {
     border-bottom: 1px dotted #ddd;
-    box-shadow: 6px 6px 5px #888888;
-    background: white;
-    margin-top: 32px;
+
+    margin-top: 0;
+
 }
 #editor .banner {
     margin: 0;
-    padding: 1em;
-    background: beige;
+    padding: 1em 0;
+    background: #eee;
 }
-#editor .banner input {
-    font-size: 16pt;
-    background: beige;
+#editor .banner input, #editor .banner .editor-name {
+    font-size: 26px;
+    background: #eee;
     border: none;
-    padding: .5em;
+    padding: .5em 0;
     width: 50%;
+    display: inline-block;
 }
 #editor .banner h2 {
     font-size: 16pt;
@@ -194,10 +204,10 @@ ul.files li.cover img {
     
 }
 .editor-toolbar {
-    background: #cc9;
+    background: #fff;
     padding: .5em;
 }
-.editor-toolbar button {
+.editor-toolbar button, .editor-toolbar .buttons a {
     background: white;
     border: 1px solid gray;
     padding: 4px 8px;
@@ -206,10 +216,21 @@ ul.files li.cover img {
     font-size: small;
     font-weight: bold;
 }
+.editor-toolbar .buttons {
+    float: right;
+}
+.editor-toolbar .buttons a {
+    color: black;
+}
 #editor-content {
     padding: 2em;
 }
-
+#editor pre {
+    background: white !important;
+    border: none !important;
+    box-shadow: 6px 6px 5px #888888;
+    
+}
 /* Utilities */
 
 .glyphicon.spinning {
@@ -255,4 +276,17 @@ ul.messages li.message {
 .add button {
     margin-left: 12px;
     font-size: 11px;
+}
+
+/* Yaml Editing */
+
+.fullkey {
+    font-weight: bold;
+    width: 60px;
+    display: inline-block;
+}
+.val {
+    border: 1px solid gray;
+    display: inline-block;
+    padding: 2px;
 }

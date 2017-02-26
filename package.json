@@ -13,14 +13,15 @@
       "gatekeeper:local": "node gatekeeper/server.js"
   },
   "dependencies": {
-    "bootstrap": "^3.3.5",
-    "googlediff": "^0.1.0",
-    "clunderscore": "^1.0.0",
-    "prismjs": "0.0.1",
-    "cledit": "^1.2.0",
-    "vue": "^2.0.1",
+      "bootstrap": "^3.3.5",
+      "googlediff": "^0.1.0",
+      "clunderscore": "^1.0.0",
+      "prismjs": "0.0.1",
+      "cledit": "^1.2.0",
+      "vue": "^2.0.1",
       "vue-resource": "^1.2.0",
-      "netlify-auth-js": "^0.5.5"
+      "netlify-auth-js": "^0.5.5",
+      "js-yaml":"^3.8.1"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
@@ -33,7 +34,7 @@
       "brfs": "^1.4.3",
     "cross-env": "^1.0.6",
     "envify": "^3.4.1",
-    "font-awesome": "^4.4.0",
+    "font-awesome": "^4.7.0",
     "http-server": "^0.9.0",
     "npm-run-all": "^2.1.2",
     "uglify-js": "^2.5.0",

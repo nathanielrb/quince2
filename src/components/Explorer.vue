@@ -21,9 +21,10 @@
   </ul>
   
   <div class="add">
-    <div v-for="rule in createRules.create">
+    <div v-for="rule in dirRules.create">
+
       <div v-if="typeof rule === 'string'">
-	<a v-on:click="showAddFileForm(rule)">
+	<a v-on:click="showAddFileForm(rule)" v-if="addFileForm != rule">
 	  <i class="fa fa-plus"></i> {{rule}} file
 	</a>
 	<form v-if="addFileForm === rule" v-on:submit.prevent="addFile">
@@ -32,8 +33,9 @@
 	  <a v-on:click="hideAddFileForm">Cancel</a>
 	</form>
       </div>
+
       <div v-else>
-	<a v-on:click="showAddFileForm(rule)">
+	<a v-on:click="showAddFileForm(rule)" v-if="addFileForm != rule">
 	  <i class="fa fa-plus"></i> {{rule.label}}
 	</a>
 	<form v-if="addFileForm === rule" v-on:submit.prevent="addFile">
@@ -41,7 +43,21 @@
 	  <a v-on:click="hideAddFileForm">Cancel</a>
 	</form>
       </div>
+      
     </div>
+
+    <div v-for="rule in dirRules.uploads">
+      <a v-if="addFileForm != rule" v-on:click="showAddFileForm(rule)">
+	<i class="fa fa-upload"></i>    {{rule.name}}
+      </a>
+
+      <form v-if="addFileForm === rule">
+	<input type="file" v-on:change="4"></input>
+	<input type="submit" v-on:submit.prevent="4"></input>
+	<a v-on:click="hideAddFileForm">Cancel</a>
+      </form>
+    </div>
+    
   </div>
   </div><!-- #explorer-->
 </template>
@@ -81,7 +97,7 @@ export default {
 		    } ]);
 		}, [{crumb: '..', path: ''}]);
 	},
-	createRules: function(){
+	dirRules: function(){
 	    return this.filer.dir({name: this.path});
 	}
     },

@@ -9,7 +9,7 @@
 	  </div>
         </div>
 
-      <div v-if="token"  class="row banner">
+      <div v-if="token"  class="row top-banner">
 
         <div class="logout col-md-1">
 	  <span v-if="token">
@@ -19,8 +19,8 @@
           </span>
         </div>
 
-        <div class="logo  col-md-7">
-  	  <h1>Quince
+        <div class="logo  col-md-1">
+  	  <h1>Quince<span class="blue">*</span>
 
 		 <span class="status">
 	    <span class="glyphicon glyphicon-refresh spinning" v-if="loading"></span>
@@ -49,7 +49,7 @@
 
       <div v-if="token" class="row">
       <div class="edit-panel col-md-7 col-md-offset-1">
-        <editor :file-url="fileUrl" :editor="editor"
+        <editor :file-url="fileUrl" :editor="editor" :editor-params="editorParams"
 			    :username="username" :repo="repo" :github="github"
 			    v-on:close="fileUrl = null"
 
@@ -170,6 +170,8 @@ export default {
         editFile: function(args){
             this.fileUrl = args.url;
 	    this.editor = args.editor;
+	    this.editorParams = args.params;
+
 	    window.scrollTo(0,0);
         },
 	changeEditingFile: function(fileUrl){
