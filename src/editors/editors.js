@@ -52,7 +52,7 @@ module.exports = {
 	}
     },
     md: function(elt, content){
-	elt.innerHTML = content;
+	elt.textContent = content;
         var editor = window.cledit(elt);
 	var pd = new Pagedown({input: editor});
 
