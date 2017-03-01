@@ -27,7 +27,7 @@
           inside: {
             'namespace': /^[\w-]+?:/
           }
-        }
+        }        
       }
     },
     'entity': /&#?[\da-z]{1,8};/gi
@@ -87,7 +87,19 @@
 	  'li': grammar.li
       }
     }
-    grammar.div = {
+    grammar.block = {
+      pattern: /^::: {\.\w+}(?:\n.*)+\n:::$/gm,
+      inside: {
+          'cl cl-gt': /^~(?: \w+)$/gm,
+	  'li': grammar.li,
+	  'md-attr': grammar.mdAttr
+      }
+    }
+   grammar.mdAttr = {
+              pattern: /{\.[\w:-]+}/g
+   }
+      
+   grammar.div = {
       pattern: /^<div class=['"]\w+['"]>(?:\n[ \t]*\S.*)*?\n<\/div>$/gm,
       inside: {
           'cl cl-gt': /^~(?: \w+)$/gm,
@@ -398,6 +410,7 @@
     grammar.p.inside.rest = rest
     grammar.blockquote.inside.rest = rest
     grammar.div.inside.rest = rest
+    grammar.block.inside.rest = rest
     grammar.squiggle.inside.rest = rest
     grammar.li.inside.rest = rest
     if (options.footnotes) {

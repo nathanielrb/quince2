@@ -128,19 +128,23 @@ module.exports = function(vm, params){
 		    , g.error);
 	},
 	saveFile: function(file, content, callback){
-
+	    G.uploadFile(file.path, file.sha, btoa(unescape(encodeURIComponent(content))), callback);
+	},
+	uploadFile: function(path, sha, content, callback){
+	    console.log("SAVING");
+	    
 	    var uri =  'https://api.github.com/repos/'
 		+ vm.repo + '/contents/'
-		+ file.path + '?access_token=' + vm.token;
+		+ path + '?access_token=' + vm.token;
 
 	    var params = {
 		"message": "Edited from Quince.",
-		"path": file.path,
-		"content": btoa(unescape(encodeURIComponent(content)))
+		"path": path,
+		"content": content
 	    }
 
-	    if(file.sha)
-		params["sha"] = file.sha;
+	    if(sha)
+		params["sha"] = sha;
 		
 	    var g = this;
 	    vm.startLoading();

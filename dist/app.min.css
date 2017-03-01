@@ -240,6 +240,17 @@ div.sidebar {
 .fn {
     background-color: #ffc48a;
     font-size: 12px;
+}
+
+.blockquote {
+    padding-left: 1em;
+    border-left: 1px solid orange;
+    display: block !important;
+}
+.block {
+    border-left: 1px solid orange;
+    padding-left: 1em;
+    display: block !important;
 }/*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
@@ -534,17 +545,4 @@ ul.messages li.message {
 .add button {
     margin-left: 12px;
     font-size: 11px;
-}
-
-/* Yaml Editing */
-
-.fullkey {
-    font-weight: bold;
-    width: 60px;
-    display: inline-block;
-}
-.val {
-    border: 1px solid gray;
-    display: inline-block;
-    padding: 2px;
 }

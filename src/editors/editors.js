@@ -37,7 +37,7 @@ module.exports = {
 	    properties: {
 		Title: { type: "string" },
 		Author: { type: "array", items: { type: "string" } },
-		Isbn: { type: "string" }
+		Isbn: { type: "string" },
 	    }
 	}
 

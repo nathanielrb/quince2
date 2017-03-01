@@ -279,16 +279,3 @@ ul.messages li.message {
     margin-left: 12px;
     font-size: 11px;
 }
-
-/* Yaml Editing */
-
-.fullkey {
-    font-weight: bold;
-    width: 60px;
-    display: inline-block;
-}
-.val {
-    border: 1px solid gray;
-    display: inline-block;
-    padding: 2px;
-}

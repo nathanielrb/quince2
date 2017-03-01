@@ -13,11 +13,18 @@ module.exports = {
 	{
 	    test: /\/books\/.*/,
 	    create: ["md"],
-	    uploads: [{
-		name: "Word",
-		extension: /docx?$/,
-		handler: "/upload"
-	    }]
+	    uploads: [
+		{
+		    name: "Word",
+		    extension: /docx?$/,
+		    handler: "/upload"
+		},
+		{
+		    name: "Cover Image",
+		    extension: /jpe?g/,
+		    filename: "cover.jpg"
+		}
+	    ]
 	}
     ],
     filerRules:

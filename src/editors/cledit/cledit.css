@@ -247,3 +247,8 @@ div.sidebar {
     border-left: 1px solid orange;
     display: block !important;
 }
+.block {
+    border-left: 1px solid orange;
+    padding-left: 1em;
+    display: block !important;
+}

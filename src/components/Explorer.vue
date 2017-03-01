@@ -51,8 +51,8 @@
 	<i class="fa fa-upload"></i>    {{rule.name}}
       </a>
 
-      <form v-if="addFileForm === rule">
-	<input type="file" v-on:change="4"></input>
+      <form v-if="addFileForm === rule" v-on:submit.prevent="uploadFile">
+	<input type="file" name="rule.filename"></input>
 	<input type="submit" v-on:submit.prevent="4"></input>
 	<a v-on:click="hideAddFileForm">Cancel</a>
       </form>
@@ -102,6 +102,9 @@ export default {
 	},
 	dirRules: function(){
 	    return this.filer.dir({name: this.path});
+	},
+	uploadFilename: function(){
+	    return this.addFileForm.filename;
 	}
     },
     methods: {
@@ -166,6 +169,44 @@ export default {
 		}
 
 		cb(0);
+	    }
+	},
+	uploadFile: function(ele){
+	    var i = 0; // first <input> is file; this should be generalized
+
+	    var files = ele.target[0].files || ele.dataTransfer.files;
+	    var read = new FileReader();
+	    
+            if (!files.length) {
+                return;
+            }
+
+	    var file = files[0];
+
+	    read.readAsBinaryString(file);
+	    //read.readAsDataURL(file);
+
+	    var vm = this;
+	    read.onloadend = function(){
+		var name =
+		    vm.uploadFilename
+		    ? vm.uploadFilename
+		    : file.name;
+
+		var path = vm.path.slice(1) + '/' + name;
+
+		//var content = read.result.replace(/^data:image\/(png|jpe?g);base64,/, "");
+		var content = btoa(read.result);
+		
+		var existingFiles = vm.files.filter(function(f){ return f.name == name });
+		var sha = 
+		    existingFiles.length
+		    ? existingFiles[0].sha
+		    : null;
+
+		var cb = () => { vm.hideAddFileForm() };
+		
+		vm.github.uploadFile( path, sha, content, cb );
 	    }
 	}
     },
