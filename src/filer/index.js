@@ -100,9 +100,12 @@ var filesort = function(a, b) {
     }
 }
 
+var defaultDirRule = { create: [] }
+
 module.exports = function(rules){
     return {
-	dir: function(dir){ return filerRec(dir, rules.dirRules, null, rule => { return rule }) },
+	dir: function(dir){ return filerRec(dir, rules.dirRules, null, rule => { return rule })
+			    || defaultDirRule },
 	file: file(rules.filerRules),
 	filesort: filesort
     }

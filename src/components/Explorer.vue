@@ -117,10 +117,15 @@ export default {
 	},
 	pathFromHash: function(){
 	    var hash = window.location.hash;
+
 	    if(hash != ''){
 		var path = hash.substr(1).split('/').slice(2);
 		this.path = '/' + path.join('/');
 	    }
+	    else{
+		this.path = '/';
+		this.updateHash();
+	    }		
 	},
 	isEditing: function(file){
 	    return this.fileUrl == file.url;
@@ -174,7 +179,6 @@ export default {
 
 	this.$parent.$on('add-file', file =>  vm.files.push(file) );
 
-	
 	this.$parent.$on('remove-file',
 			 function(file){
 			     var index = vm.files.findIndex(f => { return f.path == file.path } );
@@ -185,6 +189,7 @@ export default {
 
 
 	this.pathFromHash();
+
         if (this.username && this.repo)
 	    this.github.getFiles(this.path, (response) => { vm.files = response.data });
 	else
