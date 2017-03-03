@@ -17,7 +17,7 @@ module.exports = {
 		{
 		    name: "Word",
 		    extension: /docx?$/,
-		    handler: "/upload"
+		    handler: "http://localhost:3000/upload"
 		},
 		{
 		    name: "Cover Image",

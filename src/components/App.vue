@@ -149,6 +149,7 @@ export default {
     methods: {
 	initRepo: function(hash){
 	    var hash = window.location.hash;
+
 	    if(hash != '' && hash != '#'){
 		var path = hash.substr(1).split('/');
 		this.repo = path[0] + '/' + path[1];

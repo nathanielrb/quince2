@@ -51,7 +51,12 @@
 	<i class="fa fa-upload"></i>    {{rule.name}}
       </a>
 
-      <form v-if="addFileForm === rule" v-on:submit.prevent="uploadFile">
+      <form v-if="addFileForm === rule && !rule.handler" v-on:submit.prevent="uploadFile">
+	<input type="file" name="rule.filename"></input>
+	<input type="submit" v-on:submit.prevent="4"></input>
+	<a v-on:click="hideAddFileForm">Cancel</a>
+      </form>
+      <form v-if="addFileForm === rule && rule.handler" v-on:submit.prevent="uploadFileHandler">
 	<input type="file" name="rule.filename"></input>
 	<input type="submit" v-on:submit.prevent="4"></input>
 	<a v-on:click="hideAddFileForm">Cancel</a>
@@ -170,6 +175,44 @@ export default {
 
 		cb(0);
 	    }
+	},
+	uploadFileHandler: function(ele){
+	    var handler = this.addFileForm.handler; 
+	    var i = 0; // first <input> is file; this should be generalized
+	    
+	    var files = ele.target[0].files || ele.dataTransfer.files;
+	    var read = new FileReader();
+	    
+	    if (!files.length) {
+                return;
+	    }
+	    
+	    var file = files[0];
+	    
+	    console.log(file);
+	    
+	    var vm = this;
+	    var params = {
+		file: file,
+		path: this.path
+	    }
+
+	    var formData = new FormData();
+	    formData.append('file', file);
+	    formData.append('path',this.path);
+	    
+	    vm.$http.post(handler, formData)
+		.then(function(response){
+		    if(response.body && response.body.files){
+			var files = response.body.files;
+
+			files.map(file=> {
+			    console.log(file);
+			})
+		    }
+		    else
+			alert("Error");
+		});
 	},
 	uploadFile: function(ele){
 	    var i = 0; // first <input> is file; this should be generalized
