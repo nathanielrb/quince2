@@ -176,8 +176,19 @@ export default {
 		cb(0);
 	    }
 	},
+	pad: function(num, size) {
+	    var s = num+"";
+	    while (s.length < size) s = "0" + s;
+	    return s;
+	},
 	uploadFileHandler: function(ele){
-	    var handler = this.addFileForm.handler; 
+	    var rule = this.addFileForm;
+	    var handler = rule.handler;
+	    var namebase = rule.namebase;
+	    var ext = rule.resultExtension;
+	  
+	    var nfiles = this.files.filter( file => { return file.name.search(ext) === file.name.length - ext.length}).length;
+	  
 	    var i = 0; // first <input> is file; this should be generalized
 	    
 	    var files = ele.target[0].files || ele.dataTransfer.files;
@@ -191,7 +202,6 @@ export default {
 	    
 	    console.log(file);
 	    
-	    var vm = this;
 	    var params = {
 		file: file,
 		path: this.path
@@ -200,19 +210,51 @@ export default {
 	    var formData = new FormData();
 	    formData.append('file', file);
 	    formData.append('path',this.path);
+
+	    var vm = this;
+	    var chainedUploads = function(files){
+		if(files.length > 0){
+		    var file = files[0];
+		    var nfiles = vm.files.filter( file => { return file.name.search(ext) === file.name.length - ext.length}).length;
+		    var name = namebase + vm.pad(nfiles, 2) + rule.resultExtension;
+
+		    var cb = () => chainedUploads(files.slice(1));
+
+		    vm.uploadFileContent(name, btoa(file), cb);
+		}
+		else
+		    return;
+	    }
 	    
 	    vm.$http.post(handler, formData)
 		.then(function(response){
 		    if(response.body && response.body.files){
 			var files = response.body.files;
-
-			files.map(file=> {
-			    console.log(file);
+			chainedUploads(files);
+			/*
+			files.map( (file, index) => {
+			    var name = namebase + vm.pad(nfiles+index, 2) + rule.resultExtension;
+			    
+			    vm.uploadFileContent(name, btoa(file));
 			})
+                        */
 		    }
 		    else
 			alert("Error");
 		});
+	},
+	uploadFileContent(name, content, innerCb){
+	    var vm = this;
+	    var path = vm.path.slice(1) + '/' + name;
+	    var existingFiles = vm.files.filter(function(f){ return f.name == name });
+	    var sha = 
+		existingFiles.length
+		? existingFiles[0].sha
+		: null;
+	    		    
+	    var cb = (response) => { vm.hideAddFileForm(); vm.files.push(response.body.content); innerCb(); };
+	    
+	    vm.github.uploadFile( path, sha, content, cb );
 	},
 	uploadFile: function(ele){
 	    var i = 0; // first <input> is file; this should be generalized
@@ -236,20 +278,9 @@ export default {
 		    ? vm.uploadFilename
 		    : file.name;
 
-		var path = vm.path.slice(1) + '/' + name;
-
-		//var content = read.result.replace(/^data:image\/(png|jpe?g);base64,/, "");
-		var content = btoa(read.result);
+		vm.uploadFileContent(name, btoa(read.result));
+		return;
 		
-		var existingFiles = vm.files.filter(function(f){ return f.name == name });
-		var sha = 
-		    existingFiles.length
-		    ? existingFiles[0].sha
-		    : null;
-
-		var cb = () => { vm.hideAddFileForm() };
-		
-		vm.github.uploadFile( path, sha, content, cb );
 	    }
 	}
     },

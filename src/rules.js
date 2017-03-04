@@ -17,6 +17,8 @@ module.exports = {
 		{
 		    name: "Word",
 		    extension: /docx?$/,
+		    resultExtension: '.md',
+		    namebase: 'Chapter',
 		    handler: "http://localhost:3000/upload"
 		},
 		{
