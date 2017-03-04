@@ -59,7 +59,7 @@ module.exports = {
 	 test: "cover.jpg",
 	 class: "cover",
 	 html: function(file){
-	     return "<img src='" + file.download_url + "' alt='cover' />";
+	     return "<img src='" + file.download_url + '?sha=' + file.sha + "' alt='cover' />";
 	 },
      },
      {

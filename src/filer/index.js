@@ -28,7 +28,9 @@ var merge = function(rule, github_file, vm){
 
     if(rule.html)
 	file.html = rule.html(github_file);
-    
+
+    console.log(file.html)
+
     return file;
 }
 

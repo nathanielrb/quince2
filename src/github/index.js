@@ -3,7 +3,11 @@ import NetlifyAuth from './../myNetlify.js'
 module.exports = function(vm, params){
     var G = {
 	error: function(response){
-	    vm.$emit('error', response.data.message, response.data);
+	    console.log("Error");
+	    console.log(response.data.message);
+	    console.log(response.data);
+
+	    vm.displayError(response.data.message, response.data);
 	},
 	login: function(){
 	    var hash = window.location.hash;
@@ -203,8 +207,6 @@ module.exports = function(vm, params){
 					     console.log("Changing to " + file.url);
 					     console.log(file);
 					     vm.$emit('add-file', file);
-					     // vm.changeEditingFile(file.url);
-					     //vm.$emit('change', vm.file.url);
 					 });
 			}
 		    }

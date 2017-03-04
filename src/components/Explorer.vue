@@ -84,6 +84,7 @@ export default {
     props: ['username','repo','fileUrl','github', 'filer'],
     computed: {
         sortedFiles: function() {
+	    console.log("SORT FILES");
 	    if(this.files)
 		return this.files.slice(0)
 		.sort(this.filer.filesort)
@@ -181,6 +182,41 @@ export default {
 	    while (s.length < size) s = "0" + s;
 	    return s;
 	},
+	chainedUploads: function(files, calculateFilename){
+	    var vm = this;
+	    if(files.length > 0){
+		var file = files[0];
+				
+		var cb = () => vm.chainedUploads(files.slice(1), calculateFilename);
+		
+		vm.uploadFileContent(calculateFilename(), btoa(file), cb);
+	    }
+	    else
+		return;
+	},
+	uploadFileContent(name, content, innerCb){
+	    var vm = this;
+	    var path = vm.path.slice(1) + '/' + name;
+
+	    var existingFileIndex = vm.files.findIndex( function(f){ return f.name == name } );
+	    var existingFile, sha;
+	    
+	    if(	existingFileIndex > -1){
+		existingFile = vm.files[existingFileIndex];
+		sha = existingFile.sha;
+	    }
+	    		    
+	    var cb = (response) => { vm.hideAddFileForm();
+				     if(existingFile)
+					 vm.files.splice(existingFileIndex, 1, response.body.content);
+
+				     else
+					 vm.files.push(response.body.content);
+				     
+				     if(innerCb) innerCb(); };
+	    
+	    vm.github.uploadFile( path, sha, content, cb );
+	},
 	uploadFileHandler: function(ele){
 	    var rule = this.addFileForm;
 	    var handler = rule.handler;
@@ -212,49 +248,24 @@ export default {
 	    formData.append('path',this.path);
 
 	    var vm = this;
-	    var chainedUploads = function(files){
-		if(files.length > 0){
-		    var file = files[0];
-		    var nfiles = vm.files.filter( file => { return file.name.search(ext) === file.name.length - ext.length}).length;
-		    var name = namebase + vm.pad(nfiles, 2) + rule.resultExtension;
 
-		    var cb = () => chainedUploads(files.slice(1));
-
-		    vm.uploadFileContent(name, btoa(file), cb);
-		}
-		else
-		    return;
+	    var calculateFilename = () => {
+		var nfiles = vm.files.filter( file =>
+					      { return file.name.search(ext)
+						=== file.name.length - ext.length}).length;
+		
+		return namebase + vm.pad(nfiles, 2) + rule.resultExtension;
 	    }
+		
 	    
 	    vm.$http.post(handler, formData)
 		.then(function(response){
 		    if(response.body && response.body.files){
-			var files = response.body.files;
-			chainedUploads(files);
-			/*
-			files.map( (file, index) => {
-			    var name = namebase + vm.pad(nfiles+index, 2) + rule.resultExtension;
-			    
-			    vm.uploadFileContent(name, btoa(file));
-			})
-                        */
+			vm.chainedUploads(response.body.files, calculateFilename);
 		    }
 		    else
 			alert("Error");
 		});
-	},
-	uploadFileContent(name, content, innerCb){
-	    var vm = this;
-	    var path = vm.path.slice(1) + '/' + name;
-	    var existingFiles = vm.files.filter(function(f){ return f.name == name });
-	    var sha = 
-		existingFiles.length
-		? existingFiles[0].sha
-		: null;
-	    		    
-	    var cb = (response) => { vm.hideAddFileForm(); vm.files.push(response.body.content); innerCb(); };
-	    
-	    vm.github.uploadFile( path, sha, content, cb );
 	},
 	uploadFile: function(ele){
 	    var i = 0; // first <input> is file; this should be generalized
