@@ -35,7 +35,7 @@ module.exports = {
 	icon: "fa-file-o",
 	class: "file",
 	name: function(file){
-	    return file.name;
+	    return file.name.replace('-',' ').replace('.md','').replace(/^[0-9]+_/,'');
 	},
 	editor: Editors.md
     },

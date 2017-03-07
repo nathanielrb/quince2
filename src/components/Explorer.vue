@@ -188,8 +188,10 @@ export default {
 		var file = files[0];
 				
 		var cb = () => vm.chainedUploads(files.slice(1), calculateFilename);
+
+		var filename = file.filename || calculateFilename(file.title);
 		
-		vm.uploadFileContent(calculateFilename(file.title), btoa(file.body), cb);
+		vm.uploadFileContent(filename, file.body, cb);
 	    }
 	    else
 		return;
