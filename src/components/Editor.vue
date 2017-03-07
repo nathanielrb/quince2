@@ -1,5 +1,5 @@
 <template>
-  <div id="editor" v-if="file">
+  <div id="editor" v-if="file" v-bind:data-repo="repo" v-bind:data-file="file.path">
     <div class="banner">
 
     <div v-if="editorParams.name != file.name" class="editor-name">{{editorParams.name}}</div>
@@ -103,6 +103,7 @@ export default {
 	},
 	initEditor: function(){
 	    this.$nextTick(function(){
+
 		this.editorSvc = this.editor(document.querySelector('#editor-content'),
 					     this.content);
 	    });

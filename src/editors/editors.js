@@ -20,6 +20,24 @@ var mdGrammar = require('./cledit/mdGrammar.js');
 
 var yaml = require('js-yaml');
 
+window.Prism.hooks.add('wrap', function(env) {
+    if (env.type === 'img') {
+	var src = env.content.match(/[\w-_]+\.jpg/);
+	var editor = document.querySelector('#editor');
+	var repo = editor.dataset.repo;
+	var path = editor.dataset.file.replace(/\/[^\/]+$/,'');
+
+	var link = "https://raw.githubusercontent.com/" + repo + '/master/' + path + '/' + src[0];
+	console.log(link);
+	
+	if(src)
+	    env.content = "<p><img src='" + link + "'/></p>" + env.content
+    }
+});
+
+
+
+
 module.exports = {
     text: function(elt){
 	elt.setAttribute("contentEditable",true);
@@ -67,11 +85,8 @@ module.exports = {
 	    subs: true,
 	    sups: true
         })
-	        
-	//var load = function(content){
-	
 
-	    editor.init({
+	editor.init({
 		sectionHighlighter: function (section) {
                     return window.Prism.highlight(section.text, prismGrammar)
 		},
@@ -89,13 +104,39 @@ module.exports = {
 		}
             })
 
-	    pd.run();
-//	}
+	editor.highlighter.on('highlighted', function (section) {
+
+	    console.log('looking...');
+
+	    section.elt.getElementsByClassName('token img').cl_each(function (imgTokenElt) {
+		console.log('found one');
+              var srcElt = imgTokenElt.querySelector('.token.cl-src')
+              if (srcElt) {
+                // Create an img element before the .img.token and wrap both elements into a .token.img-wrapper
+                var imgElt = window.document.createElement('img')
+                imgElt.style.display = 'none'
+                var uri = srcElt.textContent
+                if (!/^unsafe/.test($$sanitizeUri(uri, true))) {
+                  imgElt.onload = function () {
+                    imgElt.style.display = ''
+                  }
+                  imgElt.src = uri
+                  imgEltsToCache.push(imgElt)
+                }
+                var imgTokenWrapper = window.document.createElement('span')
+                imgTokenWrapper.className = 'token img-wrapper'
+                imgTokenElt.parentNode.insertBefore(imgTokenWrapper, imgTokenElt)
+                imgTokenWrapper.appendChild(imgElt)
+                imgTokenWrapper.appendChild(imgTokenElt)
+              }
+            })
+        })
+
+	pd.run();
 
 	var buttons = new buttonBar({ cledit: editor, pagedownEditor: pd });
 	
 	return {
-//	    load: load,
 	    getContent: editor.getContent,
 	    buttons: buttons
 	}
