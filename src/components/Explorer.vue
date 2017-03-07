@@ -189,7 +189,7 @@ export default {
 				
 		var cb = () => vm.chainedUploads(files.slice(1), calculateFilename);
 		
-		vm.uploadFileContent(calculateFilename(), btoa(file), cb);
+		vm.uploadFileContent(calculateFilename(file.title), btoa(file.body), cb);
 	    }
 	    else
 		return;
@@ -249,12 +249,12 @@ export default {
 
 	    var vm = this;
 
-	    var calculateFilename = () => {
+	    var calculateFilename = (title) => {
 		var nfiles = vm.files.filter( file =>
 					      { return file.name.search(ext)
 						=== file.name.length - ext.length}).length;
 		
-		return namebase + vm.pad(nfiles, 2) + rule.resultExtension;
+		return vm.pad(nfiles, 2) + '_' + title.replace(' ','-') + rule.resultExtension;
 	    }
 		
 	    
