@@ -95,6 +95,7 @@ div.sidebar {
 
 .table * {
     font-size: inherit;
+    white-space: pre;
 }
 
 .comment {

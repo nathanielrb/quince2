@@ -69,7 +69,6 @@ div.sidebar {
     color: gray
     font-family: Courier, monospace;
     font-size: .9em;
-    color: pink;
 }
 .div .tag .attr-value{
     font-weight: bold;
@@ -95,6 +94,7 @@ div.sidebar {
 
 .table * {
     font-size: inherit;
+    white-space: pre;
 }
 
 .comment {

@@ -100,7 +100,7 @@
    }
       
    grammar.div = {
-      pattern: /^<div class=['"]\w+['"]>(?:\n[ \t]*\S.*)*?\n<\/div>$/gm,
+      pattern: /^<div class=['"]\w+['"]>(?:\n[ \t]*.*)*?\n<\/div>$/gm,
       inside: {
           'cl cl-gt': /^~(?: \w+)$/gm,
 	  'li': grammar.li
