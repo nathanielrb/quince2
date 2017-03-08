@@ -157,6 +157,12 @@
 	      }
 	  }
       }
+	grammar.table_caption = {
+	    pattern: /Table ?:.*(?:\n)/,
+	    inside: {
+		'cl cl-caption-label': /Table ?: ?/
+	    }
+	}
       grammar['table alt'] = {
         pattern: new RegExp(
           [
@@ -411,7 +417,8 @@
     grammar['h1 alt'].inside.rest = rest
     grammar['h2 alt'].inside.rest = rest
     if (options.tables) {
-      grammar.table.inside.rest = rest
+	grammar.table.inside.rest = rest
+	grammar.table_caption.inside.rest = rest
       grammar['table alt'].inside.rest = rest
     }
     grammar.p.inside.rest = rest
