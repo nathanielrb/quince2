@@ -148,7 +148,14 @@
           ].join(''),
           'gm'
         ),
-        inside: {}
+          inside: {
+	      'cl cl-table-row': {
+		  pattern: /\|.+\|(?:\n)/,
+		  inside: {
+		      'cl cl-table-cell': /\|[^|]+(\|(?:\n))*/
+		  }
+	      }
+	  }
       }
       grammar['table alt'] = {
         pattern: new RegExp(
