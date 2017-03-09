@@ -92,19 +92,19 @@ export default {
 		.filter( function(v){ return v; });
         },
 	repoName: function(){
-	    return this.repo.split('/')[1];
+	    return this.repo.split('/')[1].replace(/-/g,' ');
 	},
 	breadcrumbs: function(){
 	    return this.path.split('/')
 		.filter(function(e){ return e != '' })
 		.reduce(function(prevVal, elem, index, array){
 		    return prevVal.concat([  { 
-			crumb: elem,
+			crumb: elem.replace(/-/g,' '),
 			path: prevVal.length > 1
 			    ? prevVal[prevVal.length - 1].path + '/' + elem
 			    : elem
 		    } ]);
-		}, [{crumb: 'Cetri', path: ''}]);
+		}, [{crumb: this.repoName, path: ''}]);
 	},
 	dirRules: function(){
 	    return this.filer.dir({name: this.path});
@@ -116,7 +116,8 @@ export default {
     methods: {
         changePath: function(path) {
 	    this.path = '/' + path;
-
+	    this.$emit('change');
+	    
    	    var vm = this;
             this.github.getFiles(this.path, response => { vm.files = response.data } );
 	    this.updateHash();
@@ -256,7 +257,7 @@ export default {
 					      { return file.name.search(ext)
 						=== file.name.length - ext.length}).length;
 		
-		return vm.pad(nfiles, 2) + '_' + title.replace(' ','-') + rule.resultExtension;
+		return vm.pad(nfiles, 2) + '_' + title.replace(/ /g,'-') + rule.resultExtension;
 	    }
 		
 	    

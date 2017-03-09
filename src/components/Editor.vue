@@ -116,8 +116,10 @@ export default {
 		if(!this.newname)
                     this.getFile();
 	    }
-            else
+            else{
                 this.content = null;
+		this.file = null;
+		}
         },
 	file: function(){
 	    if(this.file)

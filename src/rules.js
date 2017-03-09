@@ -3,7 +3,7 @@ var Editors = require('./editors/editors.js');
 module.exports = {
     dirRules: [
 	{
-	    test: "/books",
+	    test: /^\/[^/]+$/,
 	    create: [{
 		type: "dir",
 		label: "book",
@@ -11,7 +11,7 @@ module.exports = {
 	    }]
 	},
 	{
-	    test: /\/books\/.*/,
+	    test: /^\/[^/]+\/[^/]+$/,
 	    create: ["md"],
 	    uploads: [
 		{

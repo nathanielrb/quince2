@@ -56,6 +56,9 @@ h2 {
     padding: 12px 0 12px 0;
     margin: 0;
 }
+.logo h1, .logo h1 a {
+    color: white;
+}
 .select-repo {
     padding: 12px 18px 12px 22px !important;
 }
@@ -169,6 +172,17 @@ ul.files li.cover img {
 
     /*height: 100vh !important;
     overflow-y: scroll;*/
+}
+.only-panel {
+    padding: 2em 0 !important;
+}
+.only-panel p {
+    font-size: 1.8em;
+    
+}
+.only-panel p a {
+    margin-right: .8em;
+    text-decoration: underline;
 }
 
 /* Editor */

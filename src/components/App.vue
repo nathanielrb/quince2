@@ -12,7 +12,7 @@
       <div v-if="token"  class="row top-banner">
 
         <div class="logo col-md-2 col-md-offset-1">
-  	  <h1>Quince<span class="blue">*</span>
+  	  <h1><a v-on:click="clearRepo">Quince<span class="blue">*</span></a>
 
 		 <span class="status">
 	    <span class="glyphicon glyphicon-refresh spinning" v-if="loading"></span>
@@ -25,13 +25,14 @@
         </div>
 
          <div class="repo col-md-3">	  
-	  <div class="select-repo">
+	  <div class="select-repo" v-if="repo">
 	    <select v-model="repo">
 	      <option v-for="repo in repos" v-bind:value="repo">
-		<template v-if="repo.split('/')[0] != username">
-		  {{repo.split('/')[0]}} :: 
-		</template>
 		{{repo.split('/')[1]}}
+		<template v-if="repo.split('/')[0] != username">
+		  ({{repo.split('/')[0]}})
+		</template>
+
 	      </option>
 	    </select>
 	  </div>
@@ -49,31 +50,37 @@
 
       <div v-if="token" class="row">
 
-            <div class="side-panel col-md-3 col-md-offset-1">
-	<template v-if="repo && username">
+        <div class="only-panel col-md-10 col-md-offset-1" v-if="!repo">
+	  <p class="repo-list">
+	    Voir les collections de
+	    <a v-for="r in repos" v-on:click="() => repo = r">{{r.split('/')[1].replace('-',' ')}}</a>
+	</div>
+
+	
+        <div class="side-panel col-md-3 col-md-offset-1" v-if="repo && username">
           <explorer
 	     :username="username" :repo="repo" :file-url="fileUrl" :github="github"
 	     :filer="filer"
+	     v-on:change="fileUrl = null"
 	     v-on:edit="editFile"
 	     v-on:msg="displayMsg"
 	     v-on:error="displayError"
 	     v-on:loading="startLoading"
 	     v-on:loaded="doneLoading">
 	     </explorer>
-	</template>
       </div>
 
-	    <div class="edit-panel col-md-7 ">
-        <editor :file-url="fileUrl" :editor="editor" :editor-params="editorParams"
-			    :username="username" :repo="repo" :github="github"
-			    v-on:close="fileUrl = null"
+	<div class="edit-panel col-md-7 " v-if="repo && username">
+          <editor :file-url="fileUrl" :editor="editor" :editor-params="editorParams"
+		  :username="username" :repo="repo" :github="github"
+		  v-on:close="fileUrl = null"
+		  
 
-			    v-on:change="changeEditingFile"
-			    v-on:msg="displayMsg"
-			    v-on:error="displayError"
-			    v-on:loading="startLoading"
-			    v-on:loaded="doneLoading">
-			  </editor>
+		  v-on:msg="displayMsg"
+		  v-on:error="displayError"
+		  v-on:loading="startLoading"
+		  v-on:loaded="doneLoading">
+	  </editor>
       </div>
 
   </div><!-- .row -->
@@ -154,6 +161,13 @@ export default {
 		var path = hash.substr(1).split('/');
 		this.repo = path[0] + '/' + path[1];
 	    }
+	},
+	clearRepo: function(){
+	    this.error = null;
+	    this.msg = null;
+	    this.repo = null;
+	    this.editingFile = null;
+	    window.location.hash = '';
 	},
 	logout: function(){
 	    this.username = null;

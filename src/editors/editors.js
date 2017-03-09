@@ -22,7 +22,7 @@ var yaml = require('js-yaml');
 
 window.Prism.hooks.add('wrap', function(env) {
     if (env.type === 'img') {
-	var src = env.content.match(/[\w-_]+\.jpg/);
+	var src = env.content.match(/[\w-_]+\.jpg/); // allow for URLs! and check for ""'s...
 	var editor = document.querySelector('#editor');
 	var repo = editor.dataset.repo;
 	var path = editor.dataset.file.replace(/\/[^\/]+$/,'');
