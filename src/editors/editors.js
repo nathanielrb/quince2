@@ -54,20 +54,10 @@ module.exports = {
 	    buttons: null
 	}
     },
-    yaml: function(elt, content){
-
-	var schema = {
-	    title: "metadata",
-	    type: "object",
-	    properties: {
-		Title: { type: "string" },
-		Author: { type: "array", items: { type: "string" } },
-		Isbn: { type: "string" },
-	    }
-	}
+    yaml: function(elt, content, options){
 
 	var BrutusinForms = brutusin["json-forms"];
-	var bf = BrutusinForms.create(schema);
+	var bf = BrutusinForms.create(options.schema);
 
 	bf.render(elt, yaml.safeLoad(content));
 	
@@ -111,33 +101,6 @@ module.exports = {
 		}
             })
 
-	editor.highlighter.on('highlighted', function (section) {
-
-	    console.log('looking...');
-
-	    section.elt.getElementsByClassName('token img').cl_each(function (imgTokenElt) {
-		console.log('found one');
-              var srcElt = imgTokenElt.querySelector('.token.cl-src')
-              if (srcElt) {
-                // Create an img element before the .img.token and wrap both elements into a .token.img-wrapper
-                var imgElt = window.document.createElement('img')
-                imgElt.style.display = 'none'
-                var uri = srcElt.textContent
-                if (!/^unsafe/.test($$sanitizeUri(uri, true))) {
-                  imgElt.onload = function () {
-                    imgElt.style.display = ''
-                  }
-                  imgElt.src = uri
-                  imgEltsToCache.push(imgElt)
-                }
-                var imgTokenWrapper = window.document.createElement('span')
-                imgTokenWrapper.className = 'token img-wrapper'
-                imgTokenElt.parentNode.insertBefore(imgTokenWrapper, imgTokenElt)
-                imgTokenWrapper.appendChild(imgElt)
-                imgTokenWrapper.appendChild(imgTokenElt)
-              }
-            })
-        })
 
 	pd.run();
 

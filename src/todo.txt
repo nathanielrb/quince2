@@ -1,0 +1,1 @@
+- create newfile with new path : either allow (and navigate) or disallow

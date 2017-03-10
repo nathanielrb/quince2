@@ -22,7 +22,7 @@ var merge = function(rule, github_file, vm){
     }
     else if(rule.editor)
 	file.click = function(){
-	    vm.$emit('edit', {url: github_file.url, editor: Editors[rule.editor], params: { name: file.name, canDelete: !rule.noDelete } });
+	    vm.$emit('edit', {url: github_file.url, editor: Editors[rule.editor], params: { name: file.name, canDelete: !rule.noDelete, options: rule.editorOptions } });
 	}
     else if(github_file.type == 'dir'){
 	    file.click = () => vm.changePath(github_file.path);
@@ -32,7 +32,7 @@ var merge = function(rule, github_file, vm){
     }
     else{
 	file.click = function(){
-	    vm.$emit('edit', {url: github_file.url, editor: Editors.text, params: { name: file.name, canDelete: !rule.noDelete } });
+	    vm.$emit('edit', {url: github_file.url, editor: Editors.text, params: { name: file.name, canDelete: !rule.noDelete, options: rule.editorOptions } });
 	}
     }
 	
@@ -48,10 +48,13 @@ var merge = function(rule, github_file, vm){
 var filerRec = function(file, rules, vm, returnFun){
     if(rules.length > 0){
 	var rule = rules[0];
+	var reg;
 	
 	switch (typeof rule.test){
 	case "string":
-	    if(file.name === rule.test)
+	    reg = new RegExp(rule.test);
+	    //if(file.name === rule.test)
+	    if(reg.exec(file.name))
 		return returnFun(rule);
 	    else
 		return filerRec(file, rules.slice(1), vm, returnFun);
@@ -119,7 +122,7 @@ module.exports = function(rules){
     return {
 	dir: function(dir){ return filerRec(dir, rules.dirRules, null, rule => { return rule })
 			    || defaultDirRule },
-	file: file(rules.filerRules),
+	file: file(rules.fileRules),
 	filesort: filesort
     }
 }

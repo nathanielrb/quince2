@@ -29,7 +29,8 @@
 	</a>
 	<form v-if="addFileForm === rule" v-on:submit.prevent="addFile">
 	  <input autofocus v-model="newFileName" type="text" />
-	  <b>.{{rule}}</b>
+	  <b v-if="addFileForm != '*'">.{{rule}}</b>
+	  <b v-else>(filename)</b>
 	  <a v-on:click="hideAddFileForm">Cancel</a>
 	</form>
       </div>
@@ -70,6 +71,7 @@
 <script>
 
 var Filer = require('./../filer/index.js');
+var Rules = require('./../rules.js');
 
 export default {
   name: 'hello',
@@ -95,14 +97,14 @@ export default {
 		.filter( function(v){ return v; });
         },
 	repoName: function(){
-	    return this.repo.split('/')[1].replace(/-/g,' ');
+	    return this.repo.split('/')[1].replace(/[-_]/g,' ');
 	},
 	breadcrumbs: function(){
 	    return this.path.split('/')
 		.filter(function(e){ return e != '' })
 		.reduce(function(prevVal, elem, index, array){
 		    return prevVal.concat([  { 
-			crumb: elem.replace(/-/g,' '),
+			crumb: elem.replace(/[-_]/g,' '),
 			path: prevVal.length > 1
 			    ? prevVal[prevVal.length - 1].path + '/' + elem
 			    : elem
@@ -127,28 +129,39 @@ export default {
     },
     methods: {
         changePath: function(path) {
-	    this.path = '/' + path;
-	    this.$emit('change');
-	    
-   	    var vm = this;
-            this.github.getFiles(this.path, response => { vm.files = response.data } );
-	    this.updateHash();
+
+	    if(!this.$parent.unsavedContent()
+	       || confirm("Unsaved changes. Close Editor anyway?")){
+		this.path = '/' + path;
+		this.$emit('change');
+		
+   		var vm = this;
+		this.github.getFiles(this.path, response => { vm.files = response.data } );
+		this.updateHash();
+	    }
         },
 	updateHash: function(){
 	    window.location.hash = '#' + this.repo + this.path;
 	},
 	loadRules: function(){
+
 	    var vm = this;
+	    
 	    this.github.getFile('https://api.github.com/repos/' + this.repo + '/contents/_quince.json',
 				(response) => {
 				    if(response && response.body && response.body.content){
-					console.log("loading rules");
-					var rules = eval(decodeURIComponent(escape(atob(response.body.content))));
-					vm.filer = new Filer(rules);
-					console.log(vm.filer);
+					var loadedRules = JSON.parse(decodeURIComponent(escape(atob(response.body.content))));
+					var combinedRules = Rules;
+
+					combinedRules.dirRules = loadedRules.dirRules;
+
+					var rule;
+					for(var i in loadedRules.fileRules){
+					    combinedRules.fileRules.push( loadedRules.fileRules[i] );
+					}
+					vm.filer = new Filer(combinedRules);
 				    }
 				    else {
-					console.log("default rules");
 					vm.filer = new Filer(Rules);
 				    }
 				});
@@ -178,12 +191,14 @@ export default {
 	addFile: function(){
 	    var name = this.newFileName;
 	    
-	    var newpath = this.path + '/' + name;
+	    var newpath = this.path + '/' + name.replace(/\s/g, '-');
 	    var vm = this;
 	    var filer = vm.filer.file(vm);
 	    
 	    if(typeof this.addFileForm === 'string'){
-		newpath += "." + this.addFileForm;
+		if(this.addFileForm != '*')
+		    newpath += "." + this.addFileForm;
+		
 		var cb = function(response){
 		    var newfile = response.data.content;
 		    vm.hideAddFileForm();
@@ -202,7 +217,7 @@ export default {
 			vm.changePath(newpath);
 		    }	
 		}
-
+		    
 		cb(0);
 	    }
 	},
@@ -266,8 +281,6 @@ export default {
 	    }
 	    
 	    var file = files[0];
-	    
-	    console.log(file);
 	    
 	    var params = {
 		file: file,
@@ -333,7 +346,8 @@ export default {
     },
     created: function() {
 	var vm = this;
-
+	vm.filer = new Filer(Rules);
+	
 	this.loadRules();
 	
 	this.$parent.$on('add-file', file =>  vm.files.push(file) );

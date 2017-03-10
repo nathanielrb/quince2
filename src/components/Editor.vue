@@ -64,12 +64,17 @@ export default {
 				    vm.$nextTick( () => vm.initEditor() );
 				});
 	},
+	unsavedContent: function(){
+	    console.log("unsaved? 1:" + this.editorSvc + ", 2:" +  (this.editorSvc && this.content != this.editorSvc.getContent()));
+	    return this.editorSvc && this.content != this.editorSvc.getContent()
+	},
         close: function(){
-	    if(this.content == this.editorSvc.getContent()
+	    if(!this.unsavedContent()
 	       || confirm("Unsaved changes. Close anyway?")){
 		this.$emit('close');
 		this.file = null;
 		this.buttons = null;
+		this.editorSvc = null;
 	    }
         },
 
@@ -112,9 +117,10 @@ export default {
 	    var editorElt = document.querySelector('#editor-content');
 	    
 	    this.$nextTick(function(){
-		
+		console.log(this.editorParams);
 		this.editorSvc = this.editor(editorElt,
-					     this.content);
+					     this.content,
+					     this.editorParams.options);
 
 	    });
 	}
@@ -129,6 +135,7 @@ export default {
             else{
                 this.content = null;
 		this.file = null;
+		this.editorSvc = null;
 		}
         },
 	file: function(){

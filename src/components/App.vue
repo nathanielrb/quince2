@@ -89,8 +89,6 @@
 var utils = require('./../utilities/index.js');
 var Github = require('./../github/index.js');
 
-var Rules = require('./../rules.js');
-
 import Explorer from './Explorer.vue'
 import Editor from './Editor.vue'
 
@@ -215,6 +213,22 @@ export default {
 	},
 	doneLoading: function(){
 	    this.loading = null;
+	},
+	unsavedContent: function(){
+	    var checks =
+		this.$children.map( component => {
+		    if(component === this)
+			return false;
+
+		    if(component.unsavedContent)
+			return component.unsavedContent();
+		    else
+			return false;
+		});
+
+	    console.log( checks);
+	    console.log( checks.indexOf(true) > -1);
+	    return checks.indexOf(true) > -1;
 	}
     },
     watch: {

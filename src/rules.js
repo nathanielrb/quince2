@@ -1,48 +1,37 @@
 module.exports = {
     dirRules: [
 	{
-	    test: /^\/[^/]+$/,
-	    create: [{
-		type: "dir",
-		label: "book",
-		files: ["_book.yml","_book.json"]
-	    }]
-	},
-	{
-	    test: /^\/[^/]+\/[^/]+$/,
-	    create: ["md"],
-	    uploads: [
-		{
-		    name: "Word",
-		    extension: /docx?$/,
-		    resultExtension: '.md',
-		    namebase: 'Chapter',
-		    handler: "http://localhost:3000/upload"
-		},
-		{
-		    name: "Cover Image",
-		    extension: /jpe?g/,
-		    filename: "cover.jpg"
-		}
-	    ]
+	    test: /.*/,
+	    create: ["*"]
 	}
     ],
-    filerRules:
+    fileRules:
     [{
 	test: /.*[.]md$/,
 	icon: "fa-file-o",
 	class: "file",
 	name: function(file){
-	    return file.name.replace('-',' ').replace('.md','').replace(/^[0-9]+_/,'');
+	    return file.name.replace(/[-_]/g,' ').replace('.md','').replace(/^[0-9]+_/,'');
 	},
 	editor: "md"
     },
      {
-	 test: "_book.yml",
+	 test: "_book.ymlxxx",
 	 icon: "fa-th-list",
 	 class: "metadata",
 	 name:  "Metadata",
 	 editor: "yaml",
+	 editorOptions: {
+	     schema: {
+		 title: "metadata",
+		 type: "object",
+		 properties: {
+		     Title: { type: "string" },
+		     Author: { type: "array", items: { type: "string" } },
+		     Isbn: { type: "string" },
+		 }
+	     }
+	 },
 	 noDelete: true
      },
      {
@@ -51,6 +40,17 @@ module.exports = {
 	 class: "metadata",
 	 name: "Settings",
 	 editor: "text",
+	 editorOptions: {
+	     schema: {
+		 title: "metadata",
+		 type: "object",
+		 properties: {
+		     PDF: { type: "string" },
+		     CSS: { type: "array", items: { type: "string" } }
+		 }
+	     }
+	 },
+
 	 noDelete: true
      },
      {
