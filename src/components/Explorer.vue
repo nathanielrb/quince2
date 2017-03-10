@@ -9,7 +9,7 @@
       </li>
     </ul>
   
-  <ul class="files" v-if="files">
+  <ul class="files" v-if="files && dirRules">
     <li v-for="file in sortedFiles" v-bind:class="[file.class, {editing: isEditing(file)}]">
       <a v-on:click="file.click">
 	<i class="fa" v-if="file.icon" v-bind:class="file.icon"></i>
@@ -21,7 +21,7 @@
   </ul>
   
   <div class="add">
-    <template v-for="rule in dirRules.create">
+    <template v-for="rule in createRules">
 
       <div v-if="typeof rule === 'string'">
 	<a v-on:click="showAddFileForm(rule)" v-if="addFileForm != rule">
@@ -46,7 +46,7 @@
       
     </template>
 
-    <div v-for="rule in dirRules.uploads">
+    <div v-if="dirRules" v-for="rule in uploadsRules">
       <a v-if="addFileForm != rule" v-on:click="showAddFileForm(rule)">
 	<i class="fa fa-upload"></i>    {{rule.name}}
       </a>
@@ -69,6 +69,8 @@
 
 <script>
 
+var Filer = require('./../filer/index.js');
+
 export default {
   name: 'hello',
   data () {
@@ -78,10 +80,11 @@ export default {
 	    newCoverImage: null,
 	    newCoverImageForm: null,
 	    addFileForm: null,
-	    newFileName: null
+	    newFileName: null,
+	    filer: null
         };
     },
-    props: ['username','repo','fileUrl','github', 'filer'],
+    props: ['username','repo','fileUrl','github'],
     computed: {
         sortedFiles: function() {
 	    console.log("SORT FILES");
@@ -107,7 +110,16 @@ export default {
 		}, [{crumb: this.repoName, path: ''}]);
 	},
 	dirRules: function(){
-	    return this.filer.dir({name: this.path});
+	    if(this.filer)
+		return this.filer.dir({name: this.path});
+	},
+	createRules: function(){
+	    if(this.dirRules)
+		return this.dirRules.create;
+	},
+	uploadsRules: function(){
+	    if(this.dirRules)
+		return this.dirRules.uploads;
 	},
 	uploadFilename: function(){
 	    return this.addFileForm.filename;
@@ -124,6 +136,22 @@ export default {
         },
 	updateHash: function(){
 	    window.location.hash = '#' + this.repo + this.path;
+	},
+	loadRules: function(){
+	    var vm = this;
+	    this.github.getFile('https://api.github.com/repos/' + this.repo + '/contents/_quince.json',
+				(response) => {
+				    if(response && response.body && response.body.content){
+					console.log("loading rules");
+					var rules = eval(decodeURIComponent(escape(atob(response.body.content))));
+					vm.filer = new Filer(rules);
+					console.log(vm.filer);
+				    }
+				    else {
+					console.log("default rules");
+					vm.filer = new Filer(Rules);
+				    }
+				});
 	},
 	pathFromHash: function(){
 	    var hash = window.location.hash;
@@ -306,6 +334,8 @@ export default {
     created: function() {
 	var vm = this;
 
+	this.loadRules();
+	
 	this.$parent.$on('add-file', file =>  vm.files.push(file) );
 
 	this.$parent.$on('remove-file',

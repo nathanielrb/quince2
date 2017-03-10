@@ -39,9 +39,16 @@ window.Prism.hooks.add('wrap', function(env) {
 
 
 module.exports = {
-    text: function(elt){
-	elt.setAttribute("contentEditable",true);
+    image: function(elt, src){
+	var img = document.createElement("img");
+	console.log(content);
+	img.src =  "data:image/jpg;base64," + btoa(content);
+	elt.appendChild(img);
 	
+    },
+    text: function(elt, content){
+	elt.setAttribute("contentEditable",true);
+
 	return {
 	    getContent: () => { return elt.innerHTML },
 	    buttons: null
@@ -135,10 +142,11 @@ module.exports = {
 	pd.run();
 
 	var buttons = new buttonBar({ cledit: editor, pagedownEditor: pd });
-	
+
 	return {
 	    getContent: editor.getContent,
 	    buttons: buttons
+	    // watcher: observer
 	}
     }
 }

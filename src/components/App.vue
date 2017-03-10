@@ -60,7 +60,6 @@
         <div class="side-panel col-md-3 col-md-offset-1" v-if="repo && username">
           <explorer
 	     :username="username" :repo="repo" :file-url="fileUrl" :github="github"
-	     :filer="filer"
 	     v-on:change="fileUrl = null"
 	     v-on:edit="editFile"
 	     v-on:msg="displayMsg"
@@ -75,7 +74,6 @@
 		  :username="username" :repo="repo" :github="github"
 		  v-on:close="fileUrl = null"
 		  
-
 		  v-on:msg="displayMsg"
 		  v-on:error="displayError"
 		  v-on:loading="startLoading"
@@ -91,7 +89,6 @@
 var utils = require('./../utilities/index.js');
 var Github = require('./../github/index.js');
 
-var Filer = require('./../filer/index.js');
 var Rules = require('./../rules.js');
 
 import Explorer from './Explorer.vue'
@@ -114,7 +111,7 @@ export default {
 	    message: null,
 	    error: null,
 	    loading: null,
-	    filer: null
+	    rules: null
 	}
     },
     created: function(){
@@ -144,13 +141,13 @@ export default {
 	if(storedToken){
 	    this.token = storedToken;
 	    this.github.getUserName(this.github.getUserRepos(this.initRepo));
-	    this.filer = new Filer(Rules);
+
+
 	}
 	else if(code){
 	    var hash = window.location.hash;
 	    history.replaceState({},window.document.title, '/' + hash);
 	    this.github.getToken(code, function(){ this.github.getUserName(this.github.getUserRepos) });
-	    this.filer = new Filer(Rules);
 	}
     },
     methods: {
@@ -160,6 +157,7 @@ export default {
 	    if(hash != '' && hash != '#'){
 		var path = hash.substr(1).split('/');
 		this.repo = path[0] + '/' + path[1];
+
 	    }
 	},
 	clearRepo: function(){
@@ -217,6 +215,11 @@ export default {
 	},
 	doneLoading: function(){
 	    this.loading = null;
+	}
+    },
+    watch: {
+	repo: function(newVal, oldVal){
+
 	}
     },
     components: {

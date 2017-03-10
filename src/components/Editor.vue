@@ -65,9 +65,12 @@ export default {
 				});
 	},
         close: function(){
-	    this.$emit('close');
-            this.file = null;
-	    this.buttons = null;
+	    if(this.content == this.editorSvc.getContent()
+	       || confirm("Unsaved changes. Close anyway?")){
+		this.$emit('close');
+		this.file = null;
+		this.buttons = null;
+	    }
         },
 
 	save: function(){
@@ -79,7 +82,7 @@ export default {
 	    var vm = this;
 	    if(this.newpath){
 		var oldfile = JSON.parse(JSON.stringify(this.file));
-		afterSave = (response) => 
+		afterSave = (response) => {
 		    this.github.deleteFile(oldfile,
 					   () => {
 					       var newfile = response.data.content;
@@ -90,22 +93,29 @@ export default {
 					       vm.$nextTick( () =>  vm.file = newfile );
 
 					   });
+
+		    vm.unsavedChanges = null;
+		}
 		
 		this.file.sha = null;
 		this.file.path = this.file.path.substr(0, this.file.path.lastIndexOf('/'))
 		    + '/' + this.filename;
 	    }
 	    else{
-		afterSave = (response) => vm.file = response.body.content;
+		afterSave = (response) => { vm.file = response.body.content;
+					    vm.unsavedChanges = null; }
 	    }
 	    
 	    this.github.saveFile(this.file, this.content, afterSave);
 	},
 	initEditor: function(){
+	    var editorElt = document.querySelector('#editor-content');
+	    
 	    this.$nextTick(function(){
-
-		this.editorSvc = this.editor(document.querySelector('#editor-content'),
+		
+		this.editorSvc = this.editor(editorElt,
 					     this.content);
+
 	    });
 	}
     },
@@ -122,8 +132,10 @@ export default {
 		}
         },
 	file: function(){
-	    if(this.file)
+	    if(this.file){
 		this.filename = this.file.name
+
+	    }
 	}
     }
  }

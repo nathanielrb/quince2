@@ -1,3 +1,4 @@
+var Editors = require('../editors/editors.js');
 
 var merge = function(rule, github_file, vm){
     var file = {};
@@ -21,10 +22,20 @@ var merge = function(rule, github_file, vm){
     }
     else if(rule.editor)
 	file.click = function(){
-	    vm.$emit('edit', {url: github_file.url, editor: rule.editor, params: { name: file.name, canDelete: !rule.noDelete } });
+	    vm.$emit('edit', {url: github_file.url, editor: Editors[rule.editor], params: { name: file.name, canDelete: !rule.noDelete } });
 	}
-    else
-	file.click = () => 0;
+    else if(github_file.type == 'dir'){
+	    file.click = () => vm.changePath(github_file.path);
+    }
+    else if(github_file.name.match(/\.(jpe?g|png)/)){
+	file.click = () => console.log("Images not yet clickable.");
+    }
+    else{
+	file.click = function(){
+	    vm.$emit('edit', {url: github_file.url, editor: Editors.text, params: { name: file.name, canDelete: !rule.noDelete } });
+	}
+    }
+	
 
     if(rule.html)
 	file.html = rule.html(github_file);

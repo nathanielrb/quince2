@@ -1,5 +1,3 @@
-var Editors = require('./editors/editors.js');
-
 module.exports = {
     dirRules: [
 	{
@@ -37,14 +35,14 @@ module.exports = {
 	name: function(file){
 	    return file.name.replace('-',' ').replace('.md','').replace(/^[0-9]+_/,'');
 	},
-	editor: Editors.md
+	editor: "md"
     },
      {
 	 test: "_book.yml",
 	 icon: "fa-th-list",
 	 class: "metadata",
 	 name:  "Metadata",
-	 editor: Editors.yaml,
+	 editor: "yaml",
 	 noDelete: true
      },
      {
@@ -52,7 +50,7 @@ module.exports = {
 	 icon: "fa-tachometer",
 	 class: "metadata",
 	 name: "Settings",
-	 editor: Editors.text,
+	 editor: "text",
 	 noDelete: true
      },
      {
@@ -60,7 +58,7 @@ module.exports = {
 	 class: "cover",
 	 html: function(file){
 	     return "<img src='" + file.download_url + '?sha=' + file.sha + "' alt='cover' />";
-	 },
+	 }
      },
      {
 	 test: function(file){
